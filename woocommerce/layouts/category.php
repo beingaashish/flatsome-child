@@ -6,8 +6,22 @@
 				<?php
 				if ( ! is_shop() && is_product_category() ) {
 
-					$category_title = get_queried_object()->name;
-					echo wp_kses_post( '<h1>' . $category_title . '</h1>' );
+					$cat_data       = get_queried_object();
+					$thumbnail_id   = get_term_meta( $cat_data->term_id, 'thumbnail_id', true );
+					$image          = wp_get_attachment_url( $thumbnail_id );
+					$category_title = $cat_data->name;
+
+					if ( $image ) {
+						?>
+
+					<img src="<?php echo esc_attr( $image ); ?>" alt="" width="275" height="275" />
+
+					<?php } ?>
+
+					<h1><?php echo esc_html( $category_title ); ?></h1>
+
+					<?php
+
 					/**
 					 * Hook: woocommerce_archive_description.
 					 *

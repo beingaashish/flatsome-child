@@ -18,6 +18,7 @@ $text_pos  = '';
 if ( $cat_style == 'overlay' || $cat_style == 'shade' ) {
 	$color = 'dark';
 }
+
 if ( $cat_style == 'overlay' ) {
 	$text_pos = 'box-text-middle text-shadow-5';
 }
@@ -25,6 +26,8 @@ if ( $cat_style == 'badge' ) {
 	$text_pos .= ' hover-dark';
 }
 
+$thumbnail_id = get_term_meta( $category->term_id, 'thumbnail_id', true );
+$image        = wp_get_attachment_url( $thumbnail_id );
 
 $query = new WP_Query(
 	array(
@@ -50,6 +53,28 @@ $query = new WP_Query(
 		$query->the_post();
 		wc_get_template_part( 'content', 'product' );
 	endwhile;
+
+	?>
+	<div class="col">
+		<a href="<?php echo esc_attr( get_category_link( $category->term_id ) ); ?>">
+			<figure>
+				<img src="<?php echo esc_attr( $image ); ?>" alt="<?php echo esc_attr( $category->name ); ?>">
+			</figure>
+			<figcaption>
+
+			<?php
+			esc_html(
+				printf(
+					__( 'Se alle produkter til %s', 'flatsome-child' ),
+					$category->name
+				)
+			);
+			?>
+
+			</figcaption>
+		</a>
+	</div>
+	<?php
 
 	wp_reset_postdata();
 	?>
