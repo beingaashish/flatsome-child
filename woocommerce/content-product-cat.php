@@ -1,14 +1,31 @@
 <?php
 /**
- * The template is for product category's archive page overriden from flatsome which is override from woocommerce.
+ * The template for displaying product category thumbnails within loops
  *
- * @see     https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce\Templates
+ * This template can be overridden by copying it to yourtheme/woocommerce/content-product_cat.php.
+ *
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
+ *
+ * @see     http://docs.woothemes.com/document/template-structure/
+ * @author  WooThemes
+ * @package WooCommerce/Templates
  * @version 4.7.0
  */
 
+/**
+ * Old template used for lower then WC 4.7.0
+ * New template file is renamed to content-product-cat.php
+ *
+ * While the old template is still BC, the versioning in
+ * WC status does not work for this template.
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+	exit; // Exit if accessed directly.
 }
 
 $cat_style = get_theme_mod( 'cat_style', 'badge' );
@@ -18,7 +35,6 @@ $text_pos  = '';
 if ( $cat_style == 'overlay' || $cat_style == 'shade' ) {
 	$color = 'dark';
 }
-
 if ( $cat_style == 'overlay' ) {
 	$text_pos = 'box-text-middle text-shadow-5';
 }
@@ -26,56 +42,50 @@ if ( $cat_style == 'badge' ) {
 	$text_pos .= ' hover-dark';
 }
 
-$thumbnail_id = get_term_meta( $category->term_id, 'thumbnail_id', true );
-$image        = wp_get_attachment_url( $thumbnail_id );
-
-$query = new WP_Query(
-	array(
-		'post_type'      => 'product',
-		'post_status'    => 'publish',
-		'posts_per_page' => 7,
-		'tax_query'      => array(
-			array(
-				'taxonomy' => 'product_cat',
-				'field'    => 'term_id',
-				'terms'    => array( $category->term_id ),
-			),
-		),
-	)
-);
+$classes = array( 'product-category', 'col' );
 ?>
-	<h5 class="uppercase header-title">
-		<?php echo esc_html( $category->name ); ?>
-	</h5>
-	<?php
+<div <?php wc_product_cat_class( $classes, $category ); ?>>
+	<div class="col-inner">
+		<?php do_action( 'woocommerce_before_subcategory', $category ); ?>
 
-	while ( $query->have_posts() ) :
-		$query->the_post();
-		wc_get_template_part( 'content', 'product' );
-	endwhile;
+		<div class="box box-<?php echo $cat_style; ?>  <?php echo $text_pos; ?> <?php echo $color; ?>">
+			<div class="box-image">
+				<?php
+				/**
+				 * woocommerce_before_subcategory_title hook
+				 *
+				 * @hooked woocommerce_subcategory_thumbnail - 10
+				 */
+				do_action( 'woocommerce_before_subcategory_title', $category );
+				?>
+				<?php if ( $cat_style == 'overlay' ) { ?>
+					<div class="overlay"></div><?php } ?>
+				<?php if ( $cat_style == 'shade' ) { ?>
+					<div class="shade"></div><?php } ?>
+			</div>
+			<div class="box-text text-center">
+				<div class="box-text-inner">
+					<h5 class="uppercase header-title">
+						<?php echo $category->name; ?>
+					</h5>
+					<?php if ( get_theme_mod( 'category_show_count', 1 ) ) : ?>
+						<p class="is-xsmall uppercase count">
+							<?php if ( $category->count > 0 ) {
+								echo apply_filters( 'woocommerce_subcategory_count_html', $category->count . ' ' . ( $category->count > 1 ? __( 'Products', 'woocommerce' ) : __( 'Product', 'woocommerce' ) ), $category );
+							}
+							?>
+						</p>
+					<?php endif; ?>
+					<?php
+					/**
+					 * woocommerce_after_subcategory_title hook
+					 */
+					do_action( 'woocommerce_after_subcategory_title', $category );
+					?>
+				</div>
+			</div>
+		</div>
 
-	?>
-	<div class="col">
-		<a href="<?php echo esc_attr( get_category_link( $category->term_id ) ); ?>">
-			<figure>
-				<img src="<?php echo esc_attr( $image ); ?>" alt="<?php echo esc_attr( $category->name ); ?>">
-			</figure>
-			<figcaption>
-
-			<?php
-			esc_html(
-				printf(
-					__( 'Se alle produkter til %s', 'flatsome-child' ),
-					$category->name
-				)
-			);
-			?>
-
-			</figcaption>
-		</a>
+		<?php do_action( 'woocommerce_after_subcategory', $category ); ?>
 	</div>
-	<?php
-
-	wp_reset_postdata();
-	?>
-<?php
+</div>

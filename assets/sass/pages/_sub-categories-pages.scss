@@ -1,0 +1,48 @@
+.flatsome-child-active-cat-filter {
+    border: solid 1px rgb(170, 170, 170);
+    background-color: #eee;
+}
+
+.shop-container.processing::after {
+    content: "";
+    background-color: #000;
+    opacity: .1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.shop-container.processing::before {
+    top: 40vh !important;
+    z-index: 999;
+    height: 100px;
+    width: 100px;
+}
+
+.flatsome-child-related-product-categories-filter {
+    &-top {
+        display: flex;
+        align-items: baseline;
+        border-bottom: 1px solid #ececec;
+        margin-bottom: 1.3em;
+    }
+
+    &-reset {
+        margin: 0;
+    }
+}
+
+.flatsome-child-related-product-categories-link {
+    text-transform: capitalize;
+}
+
+
+.flatsome-child-filter-sub-cat-title {
+    text-transform: capitalize;
+}
+
+.ux-menu {
+    margin-bottom: 20px;
+}

@@ -4,33 +4,188 @@
 			<?php flatsome_sticky_column_open( 'category_sticky_sidebar' ); ?>
 			<div id="shop-sidebar" class="sidebar-inner col-inner">
 				<?php
-				if ( ! is_shop() && is_product_category() ) {
+				$cat_data = get_queried_object();
 
-					$cat_data       = get_queried_object();
+
+				if ( ! is_shop() && is_product_category() && 0 !== $cat_data->parent ) {
+
+					// This code runs inside of child categories archive page.
+
+					$parent_cat_slug_arr = array(
+						'product-type' => 'produkt-type',
+						'hudtype'      => 'hudtype',
+						'hudtilstand'  => 'hudtilstand',
+					);
+
+
 					$thumbnail_id   = get_term_meta( $cat_data->term_id, 'thumbnail_id', true );
 					$image          = wp_get_attachment_url( $thumbnail_id );
 					$category_title = $cat_data->name;
 
+
+					// Sub Category Image.
 					if ( $image ) {
 						?>
 
-					<img src="<?php echo esc_attr( $image ); ?>" alt="" width="275" height="275" />
+					<div class="img has-hover x md-x lg-x y md-y lg-y">
+						<div class="img-inner dark">
+							<img src="<?php echo esc_attr( $image ); ?>" class="" alt="" width="711" height="800" />
+						</div>
+					</div>
 
-					<?php } ?>
 
-					<h1><?php echo esc_html( $category_title ); ?></h1>
+						<?php
+					}
 
-					<?php
+					// Sub Category Title.
+					if ( $category_title ) {
+						?>
+						<div class="container section-title-container flatsome-section-title-container">
 
-					/**
-					 * Hook: woocommerce_archive_description.
-					 *
-					 * @hooked woocommerce_taxonomy_archive_description - 10
-					 * @hooked woocommerce_product_archive_description - 10
-					 */
+							<h1 class="section-title">
+							<span class="section-title-main">
+								<?php echo esc_html( $category_title ); ?>
+							</span>
+						</h1>
+						</div>
+						<?php
+					}
+
+					// Sub Category Archive Description.
 					do_action( 'woocommerce_archive_description' );
 
-				} elseif ( is_active_sidebar( 'shop-sidebar' ) ) {
+					?>
+					<section class="flatsome-child-related-product-categories-filter">
+						<div class="flatsome-child-related-product-categories-filter-top">
+							<h3 class="flatsome-child-related-product-categories-filter-heading"><?php esc_html_e( 'Sortér efter:', 'flatsome' ); ?></h3>
+							<button class="flatsome-child-related-product-categories-filter-reset"><?php esc_html_e( 'Nulstil', 'flatsome' ); ?></button>
+						</div>
+					<?php
+					$parent_slug = get_term( $cat_data->parent, 'product_cat' )->slug;
+
+					// If current subcategory parent is product-type list category from hudtype and hudtilstand.
+					if ( 'produkt-type' === $parent_slug ) {
+
+						// List Hudtype subcategories.
+						$hudtype_cat      = get_term_by( 'slug', 'hudtype', 'product_cat' );
+						$hudtype_sub_cats = get_categories(
+							array(
+								'parent'   => $hudtype_cat->term_id,
+								'taxonomy' => 'product_cat',
+							)
+						);
+
+						?>
+						<h4 class="flatsome-child-filter-sub-cat-title"><?php echo esc_html( $hudtype_cat->name ); ?></h4>
+
+						<div class="ux-menu stack stack-col justify-start ux-menu--divider-solid" >
+						<?php
+
+						foreach ( $hudtype_sub_cats as $hudtype_sub_cat => $val ) {
+							?>
+								<div class="ux-menu-link flex menu-item flatsome-child-related-product-categories-item">
+									<a href="#" class="ux-menu-link__link flex current-menu-item flatsome-child-related-product-categories-link" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
+										<?php echo esc_html( $val->name ); ?>
+									</a>
+								</div>
+							<?php
+						}
+
+						?>
+						</div>
+
+						<?php
+
+						// List Hudtilstand subcategories.
+						$hudtilstand_cat      = get_term_by( 'slug', 'hudtilstand', 'product_cat' );
+						$hudtilstand_sub_cats = get_categories(
+							array(
+								'parent'   => $hudtilstand_cat->term_id,
+								'taxonomy' => 'product_cat',
+							)
+						);
+						?>
+
+						<h4 class="flatsome-child-filter-sub-cat-title"><?php echo esc_html( $hudtilstand_cat->name ); ?></h4>
+						<div class="ux-menu stack stack-col justify-start ux-menu--divider-solid" >
+
+						<?php
+						foreach ( $hudtilstand_sub_cats as $hudtilstand_sub_cat => $val ) {
+							?>
+								<div class="ux-menu-link flex menu-item flatsome-child-related-product-categories-item">
+									<a href="#" class="ux-menu-link__link flex current-menu-item flatsome-child-related-product-categories-link" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
+										<?php echo esc_html( $val->name ); ?>
+									</a>
+								</div>
+							<?php
+						}
+						?>
+						</div>
+
+						<?php
+
+					} elseif ( 'hudtype' === $parent_slug || 'hudtilstand' === $parent_slug ) {
+
+						// List Produkt type subcategories.
+						$produkt_type_cat      = get_term_by( 'slug', 'produkt-type', 'product_cat' );
+						$produkt_type_sub_cats = get_categories(
+							array(
+								'parent'   => $produkt_type_cat->term_id,
+								'taxonomy' => 'product_cat',
+							)
+						);
+						?>
+						<h4 class="flatsome-child-filter-sub-cat-title"><?php echo esc_html( $produkt_type_cat->name ); ?></h4>
+						<div class="ux-menu stack stack-col justify-start ux-menu--divider-solid" >
+
+						<?php
+						foreach ( $produkt_type_sub_cats as $produkt_type_sub_cat => $val ) {
+							?>
+								<div class="ux-menu-link flex menu-item flatsome-child-related-product-categories-item">
+									<a href="#" class="ux-menu-link__link flex current-menu-item flatsome-child-related-product-categories-link" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
+										<?php echo esc_html( $val->name ); ?>
+									</a>
+								</div>
+							<?php
+						}
+						?>
+						</div>
+						<?php
+					} elseif ( 'brands' === $parent_slug ) {
+
+						// List Brands subcategories.
+						$brands_cat      = $cat_data->name;
+						$brands_sub_cats = get_categories(
+							array(
+								'parent'   => $cat_data->parent,
+								'taxonomy' => 'product_cat',
+							)
+						);
+
+						?>
+						<h4 class="flatsome-child-filter-sub-cat-title"><?php echo esc_html( $brands_cat ); ?></h4>
+						<div class="ux-menu stack stack-col justify-start ux-menu--divider-solid" >
+						<?php
+						foreach ( $brands_sub_cats as $brands_sub_cat => $val ) {
+							?>
+								<div class="ux-menu-link flex menu-item flatsome-child-related-product-categories-item">
+									<a href="#" class="ux-menu-link__link flex current-menu-item flatsome-child-related-product-categories-link" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
+										<?php echo esc_html( $val->name ); ?>
+									</a>
+								</div>
+							<?php
+						}
+						?>
+						</div>
+
+						<?php
+					}
+					?>
+					</section>
+					<?php
+				}
+
+				if ( is_active_sidebar( 'shop-sidebar' ) ) {
 					dynamic_sidebar( 'shop-sidebar' );
 				} else {
 					echo '<p>You need to assign Widgets to <strong>"Shop Sidebar"</strong> in <a href="' . get_site_url() . '/wp-admin/widgets.php">Appearance > Widgets</a> to show anything here</p>';
@@ -51,10 +206,10 @@
 		 */
 		do_action( 'woocommerce_before_main_content' );
 
-
 		?>
 
 		<?php
+
 		if ( woocommerce_product_loop() ) {
 
 			/**
@@ -69,7 +224,6 @@
 			woocommerce_product_loop_start();
 
 			if ( wc_get_loop_prop( 'total' ) ) {
-
 				while ( have_posts() ) {
 					the_post();
 
