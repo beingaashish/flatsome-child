@@ -13,6 +13,49 @@ Version: 1.0
 	text-transform: capitalize;
 }
 
+.wishlist-button.is-outline {
+	background-color: #fff;
+	color: var(--primary-color);
+	border-color: #fff;
+}
+
+.wishlist-button.is-outline:hover {
+	background-color: var(--primary-color);
+	color: #fff;
+	border-color: var(--primary-color);
+}
+
+.wishlist-button {
+	margin: 0;
+}
+
+.wishlist-popup {
+	opacity: 0;
+	z-index: -1;
+	position: absolute;
+	overflow: hidden;
+	padding: 1px 0;
+	padding-left: 10px;
+	margin-top: 0px;
+	border-radius: 100px;
+	line-height: 30px;
+	max-height: 32px;
+	text-align: left;
+	font-size: .9em;
+	top: 0;
+	background-color: var(--primary-color);
+	right: 2px;
+	width: 0;
+	color: #FFF;
+	-webkit-transition: all .3s ease;
+	transition: all .3s ease;
+}
+
+.wishlist-icon:hover .wishlist-popup {
+	width: 120px;
+	max-height: 32px;
+}
+
 .flatsome-child-active-cat-filter {
 	border: solid 1px #aaaaaa;
 	background-color: #eee;
