@@ -78,12 +78,18 @@ const categoriesFilter = (
                         DOMStrings.containerEl.removeChild( DOMStrings.containerEl.lastChild );
                     }
 
-                    // Add new filtered products.
+                    // Trigger necessary events.
                     Flatsome.attach('quick-view', posts);
                     Flatsome.attach('tooltips', posts);
                     Flatsome.attach('add-qty', posts);
                     Flatsome.attach('wishlist', posts);
+
+
+                    // Add new filtered products.
                     $( '.shop-container .products' ).append( posts );
+
+                    // Trigger event to change quick view style.
+                    $( window ).trigger( 'flatsome_child_quick_view_reload' );
 
                 } else {
                     // Display no products found message.
