@@ -5,6 +5,8 @@
  * @package flatsome
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Child Theme Version
  */

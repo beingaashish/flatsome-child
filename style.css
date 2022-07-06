@@ -134,6 +134,15 @@ button.wishlist-button {
 	display: block;
 }
 
+.product-small .box-image .add-to-cart-button {
+	position: absolute;
+	width: 100%;
+}
+
+.product-small .box-image .add-to-cart-button a {
+	margin-right: 0;
+}
+
 .flatsome-child-active-cat-filter {
 	border: solid 1px #aaaaaa;
 	background-color: #eee;

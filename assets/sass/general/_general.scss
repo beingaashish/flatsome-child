@@ -125,3 +125,18 @@ button.wishlist-button {
         }
     }
 }
+
+.product-small {
+
+    .box-image {
+
+        .add-to-cart-button {
+            position: absolute;
+            width: 100%;
+
+            a {
+                margin-right: 0;
+            }
+        }
+    }
+}
