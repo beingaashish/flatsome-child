@@ -143,6 +143,45 @@ button.wishlist-button {
 	margin-right: 0;
 }
 
+.badge-container {
+	margin: 15px 0 0 15px;
+}
+
+.badge .on-sale {
+	background-color: #ef837b;
+	font-size: 14px;
+	padding: 5px 10px;
+	display: block;
+	height: auto;
+	width: -webkit-fit-content;
+	width: -moz-fit-content;
+	width: fit-content;
+	font-weight: 400;
+}
+
+.box-image .out-of-stock-label {
+	background-color: #a69a8c;
+	font-size: 14px;
+	padding: 5px 10px;
+	display: block;
+	height: auto;
+	width: -webkit-fit-content;
+	width: -moz-fit-content;
+	width: fit-content;
+	font-weight: 400;
+	color: #fff;
+	left: 15px;
+	top: 15px;
+}
+
+.nearly-out-of-stock.out-of-stock-label {
+	background-color: #7dd2ea;
+}
+
+.product.sale .out-of-stock-label {
+	top: 45px;
+}
+
 .flatsome-child-active-cat-filter {
 	border: solid 1px #aaaaaa;
 	background-color: #eee;

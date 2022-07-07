@@ -29,6 +29,11 @@ if ( empty( $product ) || false === wc_get_loop_product_visibility( $product->ge
 // Check stock status.
 $out_of_stock = ! $product->is_in_stock();
 
+// Check if product is about to go out of stock.
+$available_quantity = null != $product->get_stock_quantity() ? (int) $product->get_stock_quantity() : null;
+$global_product_threshold = esc_html( get_option( 'woocommerce_notify_low_stock_amount', '' ) );
+$product_threshold  = null != $product->get_low_stock_amount() ? (int) $product->get_low_stock_amount() : $global_product_threshold;
+
 // Extra post classes.
 $classes   = array();
 $classes[] = 'product-small';
@@ -68,7 +73,14 @@ if ( $out_of_stock ) {
 			<?php
 			if ( $out_of_stock ) {
 				?>
-				<div class="out-of-stock-label"><?php _e( 'Out of stock', 'woocommerce' ); ?></div><?php } ?>
+				<div class="out-of-stock-label"><?php _e( 'Kommer Snart', 'woocommerce' ); ?></div>
+				<?php
+			} elseif ( ( $available_quantity && $product_threshold ) && ( $available_quantity < $product_threshold )  ) {
+				?>
+				<div class="out-of-stock-label nearly-out-of-stock"><?php _e( 'NÆSTEN UDSOLGT', 'woocommerce' ); ?></div>
+				<?php
+			}
+			?>
 			<?php
 			// This hook displays product box add to cart button.
 			do_action( 'flatsome_product_box_after' );

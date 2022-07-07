@@ -46,3 +46,31 @@ function flatsome_child_woocommerce_loop_add_to_cart_link( $link, $product, $arg
 }
 
 add_filter( 'woocommerce_loop_add_to_cart_link', 'flatsome_child_woocommerce_loop_add_to_cart_link', 5, 3 );
+
+
+
+/**
+ * Overriden function of parent theme to display only sub category of brand in product box.
+ */
+function flatsome_woocommerce_shop_loop_category() {
+	if ( ! flatsome_option( 'product_box_category' ) ) {
+		return;
+	} ?>
+	<p class="category uppercase is-smaller no-text-overflow product-cat op-7">
+		<?php
+		global $product;
+
+		$product_id   = $product->get_id() ? $product->get_id() : get_the_ID();
+		$product_cats = get_the_terms( $product_id, 'product_cat' );
+
+		$brands_cat_obj = get_term_by( 'slug', 'brands', 'product_cat' );
+		$brands_cat_id  = $brands_cat_obj->term_id;
+
+		foreach ( $product_cats as $product_cat => $product_cat_obj ) {
+			if ( $product_cat_obj->parent === $brands_cat_id ) {
+				echo esc_html( $product_cat_obj->name );
+			}
+		}
+}
+?>
+	</p>
