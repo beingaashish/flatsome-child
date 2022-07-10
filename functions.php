@@ -17,6 +17,7 @@ define( 'FLATSOME_CHILD_VERSION', '1.0.0' );
  * Include files.
  */
 require_once get_stylesheet_directory() . '/includes/helper-functions.php';
+require_once get_stylesheet_directory() . '/includes/theme-metaboxes.php';
 require_once get_stylesheet_directory() . '/includes/subcategories-filter.php';
 
 
