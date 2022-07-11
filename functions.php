@@ -7,6 +7,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// Check if woocommerce is active.
+if ( ! class_exists( 'WooCommerce' ) ) {
+	return;
+}
+
 /**
  * Child Theme Version
  */

@@ -13,21 +13,58 @@ Version: 1.0
 	text-transform: capitalize;
 }
 
+.wishlist-icon:hover .wishlist-button.is-outline {
+	background-color: var(--primary-color);
+	color: #fff;
+}
+
 .wishlist-button.is-outline {
 	background-color: #fff;
 	color: var(--primary-color);
 	border: none;
 }
 
-.wishlist-button.is-outline:hover {
-	background-color: var(--primary-color);
-	color: #fff;
-}
-
 button.wishlist-button {
 	margin: 0 !important;
 	height: 32px;
 	width: 32px;
+	min-height: 32px;
+	min-width: 32px;
+}
+
+.product-small .image-tools.top.right.show-on-hover {
+	z-index: 1;
+}
+
+.product-small .price-wrapper {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+}
+
+.product-small .price-wrapper .star-rating {
+	margin-left: initial;
+	margin-right: initial;
+	margin-left: 10px;
+}
+
+.product-small .price-wrapper .flatsome-child-product-quantity {
+	margin: 0;
+	margin-top: 1px;
+}
+
+.product-small .price-wrapper span.price {
+	margin-top: 10px;
+	-ms-flex-preferred-size: 100%;
+	flex-basis: 100%;
 }
 
 .wishlist-popup {
@@ -43,7 +80,7 @@ button.wishlist-button {
 	max-height: 32px;
 	height: 32px;
 	text-align: left;
-	font-size: .9em;
+	font-size: 12px;
 	top: 0;
 	background-color: var(--primary-color);
 	right: 2px;
@@ -54,7 +91,7 @@ button.wishlist-button {
 }
 
 .wishlist-icon:hover .wishlist-popup {
-	width: 120px;
+	width: 130px;
 	max-height: 32px;
 }
 
@@ -81,7 +118,7 @@ button.wishlist-button {
 .flatsome-child-quick-view-wrapper.show-on-hover:hover a.quick-view {
 	line-height: 30px;
 	padding-left: 10px;
-	width: 120px;
+	width: 130px;
 	text-align: left;
 	background-color: var(--primary-color);
 }
@@ -94,7 +131,7 @@ button.wishlist-button {
 	z-index: 2;
 	right: 0;
 	top: 0;
-	background: var(--primary-color) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 11C4 7.13401 7.13401 4 11 4C14.866 4 18 7.13401 18 11C18 12.886 17.2541 14.5978 16.0412 15.8566C16.0071 15.8828 15.9742 15.9116 15.9429 15.9429C15.9116 15.9742 15.8828 16.0071 15.8566 16.0412C14.5978 17.2541 12.886 18 11 18C7.13401 18 4 14.866 4 11ZM16.6177 18.0319C15.078 19.2635 13.125 20 11 20C6.02944 20 2 15.9706 2 11C2 6.02944 6.02944 2 11 2C15.9706 2 20 6.02944 20 11C20 13.125 19.2635 15.078 18.0319 16.6177L21.7071 20.2929C22.0977 20.6834 22.0977 21.3166 21.7071 21.7071C21.3166 22.0977 20.6834 22.0977 20.2929 21.7071L16.6177 18.0319Z" fill="white"/></svg>') no-repeat;
+	background: #a59a8c url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 11C4 7.13401 7.13401 4 11 4C14.866 4 18 7.13401 18 11C18 12.886 17.2541 14.5978 16.0412 15.8566C16.0071 15.8828 15.9742 15.9116 15.9429 15.9429C15.9116 15.9742 15.8828 16.0071 15.8566 16.0412C14.5978 17.2541 12.886 18 11 18C7.13401 18 4 14.866 4 11ZM16.6177 18.0319C15.078 19.2635 13.125 20 11 20C6.02944 20 2 15.9706 2 11C2 6.02944 6.02944 2 11 2C15.9706 2 20 6.02944 20 11C20 13.125 19.2635 15.078 18.0319 16.6177L21.7071 20.2929C22.0977 20.6834 22.0977 21.3166 21.7071 21.7071C21.3166 22.0977 20.6834 22.0977 20.2929 21.7071L16.6177 18.0319Z" fill="white"/></svg>') no-repeat;
 	background-position: right 50% top 50%;
 	content: '';
 	display: block;
@@ -106,7 +143,8 @@ button.wishlist-button {
 	background-color: #fff;
 	height: 32px;
 	width: 32px;
-	font-size: 11.52px;
+	font-weight: 400;
+	font-size: 12px;
 	-ms-flex-item-align: center;
 	align-self: center;
 	text-transform: capitalize;
@@ -128,7 +166,7 @@ button.wishlist-button {
 	z-index: 2;
 	right: 0;
 	top: 0;
-	background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 11C4 7.13401 7.13401 4 11 4C14.866 4 18 7.13401 18 11C18 12.886 17.2541 14.5978 16.0412 15.8566C16.0071 15.8828 15.9742 15.9116 15.9429 15.9429C15.9116 15.9742 15.8828 16.0071 15.8566 16.0412C14.5978 17.2541 12.886 18 11 18C7.13401 18 4 14.866 4 11ZM16.6177 18.0319C15.078 19.2635 13.125 20 11 20C6.02944 20 2 15.9706 2 11C2 6.02944 6.02944 2 11 2C15.9706 2 20 6.02944 20 11C20 13.125 19.2635 15.078 18.0319 16.6177L21.7071 20.2929C22.0977 20.6834 22.0977 21.3166 21.7071 21.7071C21.3166 22.0977 20.6834 22.0977 20.2929 21.7071L16.6177 18.0319Z" fill="%23334862"/></svg>') no-repeat;
+	background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 11C4 7.13401 7.13401 4 11 4C14.866 4 18 7.13401 18 11C18 12.886 17.2541 14.5978 16.0412 15.8566C16.0071 15.8828 15.9742 15.9116 15.9429 15.9429C15.9116 15.9742 15.8828 16.0071 15.8566 16.0412C14.5978 17.2541 12.886 18 11 18C7.13401 18 4 14.866 4 11ZM16.6177 18.0319C15.078 19.2635 13.125 20 11 20C6.02944 20 2 15.9706 2 11C2 6.02944 6.02944 2 11 2C15.9706 2 20 6.02944 20 11C20 13.125 19.2635 15.078 18.0319 16.6177L21.7071 20.2929C22.0977 20.6834 22.0977 21.3166 21.7071 21.7071C21.3166 22.0977 20.6834 22.0977 20.2929 21.7071L16.6177 18.0319Z" fill="%23#a59a8c"/></svg>') no-repeat;
 	background-position: right 50% top 50%;
 	content: '';
 	display: block;
@@ -160,7 +198,7 @@ button.wishlist-button {
 }
 
 .box-image .out-of-stock-label {
-	background-color: #a69a8c;
+	background-color: #af9d87;
 	font-size: 14px;
 	padding: 5px 10px;
 	display: block;
@@ -180,6 +218,22 @@ button.wishlist-button {
 
 .product.sale .out-of-stock-label {
 	top: 45px;
+}
+
+.product-small .box-image .add-to-cart-button a {
+	background: #fff;
+	color: var(--primary-color);
+}
+
+.product-small .box-image .add-to-cart-button a:hover {
+	background: var(--primary-color);
+	color: #fff;
+}
+
+.product-small a.added_to_cart,
+.product-small .add_to_cart_button {
+	padding: 0 1.2em;
+	font-weight: 400;
 }
 
 .flatsome-child-active-cat-filter {

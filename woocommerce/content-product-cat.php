@@ -70,7 +70,8 @@ $classes = array( 'product-category', 'col' );
 					</h5>
 					<?php if ( get_theme_mod( 'category_show_count', 1 ) ) : ?>
 						<p class="is-xsmall uppercase count">
-							<?php if ( $category->count > 0 ) {
+							<?php
+							if ( $category->count > 0 ) {
 								echo apply_filters( 'woocommerce_subcategory_count_html', $category->count . ' ' . ( $category->count > 1 ? __( 'Products', 'woocommerce' ) : __( 'Product', 'woocommerce' ) ), $category );
 							}
 							?>
@@ -78,7 +79,7 @@ $classes = array( 'product-category', 'col' );
 					<?php endif; ?>
 					<?php
 					/**
-					 * woocommerce_after_subcategory_title hook
+					 * woocommerce_after_subcategory_title hook.
 					 */
 					do_action( 'woocommerce_after_subcategory_title', $category );
 					?>

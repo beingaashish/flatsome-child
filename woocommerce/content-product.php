@@ -40,6 +40,9 @@ $classes[] = 'product-small';
 $classes[] = 'col';
 $classes[] = 'has-hover';
 
+// Products meta.
+$myronja_product_quantity = get_post_meta( $product->get_id(), '_myronja_product_quantity', true ) ? get_post_meta( $product->get_id(), '_myronja_product_quantity', true ) : '';
+
 if ( $out_of_stock ) {
 	$classes[] = 'out-of-stock';
 }
@@ -94,9 +97,10 @@ if ( $out_of_stock ) {
 				echo '<div class="title-wrapper">';
 				do_action( 'woocommerce_shop_loop_item_title' );
 				echo '</div>';
-
-
 				echo '<div class="price-wrapper">';
+				if ( $myronja_product_quantity ) {
+					echo '<p class="flatsome-child-product-quantity">' . $myronja_product_quantity . '</p>';
+				}
 				do_action( 'woocommerce_after_shop_loop_item_title' );
 				echo '</div>';
 			?>
