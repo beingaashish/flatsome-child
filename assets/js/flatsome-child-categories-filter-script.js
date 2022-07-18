@@ -46,8 +46,6 @@ const categoriesFilter = (
                 targetEl.classList.add( 'flatsome-child-active-cat-filter' );
             }
 
-            console.log(queryArgs);
-
             // If queryArgs has only one value that is the ID of current page
             if (1 == Object.keys(queryArgs).length && queryArgs.hasOwnProperty('currentPageCatID') ) {
                 if (null != DOMStrings.wooCounter ) DOMStrings.wooCounter.style.display = 'inline-block';

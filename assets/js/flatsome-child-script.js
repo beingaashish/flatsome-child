@@ -4,14 +4,12 @@
     function ($) {
 
         let $this = $(this);
-        console.log($this);
 
         if ($this.find('.yith-wcwl-wishlistexistsbrowse, .yith-wcwl-wishlistaddedbrowse').length) {
 
             function flatsomeChildAddToWishlist() {
                 $this.find('.wishlist-button i').removeClass('icon-heart-o');
                 $this.find('.wishlist-button i').addClass('icon-heart');
-                console.log('test');
             }
 
         }
