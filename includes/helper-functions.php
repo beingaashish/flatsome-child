@@ -87,6 +87,8 @@ function flatsome_woocommerce_shop_loop_category() {
 function flatsome_child_add_extra_tabs_on_single_product_page( $tabs ) {
 	global $post;
 
+	unset( $tabs['description'] );
+
 	$post_id                     = $post->ID;
 	$myronja_product_ingredients = get_post_meta( $post_id, '_myronja_product_ingredients', true );
 	$myronja_product_application = get_post_meta( $post_id, '_myronja_product_application', true );
@@ -95,7 +97,7 @@ function flatsome_child_add_extra_tabs_on_single_product_page( $tabs ) {
 	if ( ! empty( $myronja_product_ingredients ) ) {
 		$tabs['ingredients_tab'] = array(
 			'title'    => __( 'INGREDIENSER', 'woocommerce' ),
-			'priority' => 8,
+			'priority' => 9,
 			'callback' => 'flatsome_child_ingredients_product_tab_content',
 		);
 	}
@@ -103,7 +105,7 @@ function flatsome_child_add_extra_tabs_on_single_product_page( $tabs ) {
 	if ( ! empty( $myronja_product_application ) ) {
 		$tabs['application_tab'] = array(
 			'title'    => __( 'ANVENDELSE', 'woocommerce' ),
-			'priority' => 9,
+			'priority' => 8,
 			'callback' => 'flatsome_child_application_product_tab_content',
 		);
 	}
@@ -161,10 +163,132 @@ function flatsome_child_application_product_tab_content() {
 function flatsome_child_evaluation_product_tab_content() {
 	global $post;
 
-	$post_id                     = $post->ID;
+	$post_id                    = $post->ID;
 	$myronja_product_evaluation = get_post_meta( $post_id, '_myronja_product_evaluation', true );
 
 	if ( ! empty( $myronja_product_evaluation ) ) {
 		echo wp_kses_post( apply_filters( 'the_content', $myronja_product_evaluation ) );
 	}
 }
+
+/**
+ * Displays product quantity in single product page.
+ *
+ * @return void
+ */
+function flatsome_child_product_quantity() {
+	global $post;
+
+	$post_id                  = $post->ID;
+	$myronja_product_quantity = get_post_meta( $post_id, '_myronja_product_quantity', true );
+
+	if ( $myronja_product_quantity ) {
+		echo '<p class="flatsome-child-product-quantity">' . esc_html( $myronja_product_quantity ) . '</h1>';
+	}
+}
+add_action( 'woocommerce_single_product_summary', 'flatsome_child_product_quantity', 6 );
+
+/**
+ * Displays product description in single product page.
+ *
+ * @return void
+ */
+function flatsome_child_product_description() {
+	global $post;
+
+	echo '<p>' . wp_kses_post( $post->post_content ) . '</p>';
+}
+add_action( 'woocommerce_single_product_summary', 'flatsome_child_product_description', 29 );
+
+/**
+ * Displays
+ *
+ * @return void
+ */
+function flatsome_child_product_effects() {
+	?>
+	<section class="flatsome-child-product-effect">
+		<div class="container section-title-container">
+			<h3 class="section-title section-title-center">
+				<b></b>
+				<span class="section-title-main" style="font-size:78%;">produkt Effekt</span>
+				<b></b>
+			</h3>
+		</div>
+		<div class="row">
+			<?php
+			$all_product_effect_terms = get_terms(
+				array(
+					'taxonomy'   => 'product_effect',
+					'hide_empty' => false,
+				)
+			);
+
+			$selected_product_effect_terms = get_terms(
+				array(
+					'taxonomy'   => 'product_effect',
+					'hide_empty' => true,
+				)
+			);
+
+			foreach ( $all_product_effect_terms as $term_index => $term_obj ) {
+				?>
+			<div class="col medium-3 small-6 large-3">
+				<div class="col-inner">
+					<div class="img has-hover x md-x lg-x y md-y lg-y">
+						<div class="img-inner dark <?php echo esc_attr( ! in_array( $term_obj, $selected_product_effect_terms ) ? 'flatsome-child-dim-image' : '' ); ?>">
+							<img width="216" height="253" src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/' . $term_obj->slug . '.png' ); ?>" class="attachment-large size-large" alt="" loading="lazy">
+						</div>
+					</div>
+				</div>
+			</div>
+				<?php
+			}
+			?>
+
+		</div>
+	</section>
+	<section class="flatsome-child-product-sustainability">
+		<div class="container section-title-container">
+			<h3 class="section-title section-title-center">
+				<b></b>
+				<span class="section-title-main" style="font-size:78%;">Bæredygtighed</span>
+				<b></b>
+			</h3>
+		</div>
+		<div class="row">
+			<?php
+			$all_sustainability_terms = get_terms(
+				array(
+					'taxonomy'   => 'product_sustainability',
+					'hide_empty' => false,
+				)
+			);
+
+			$selected_sustainability_terms = get_terms(
+				array(
+					'taxonomy'   => 'product_sustainability',
+					'hide_empty' => true,
+				)
+			);
+
+			foreach ( $all_sustainability_terms as $term_index => $term_obj ) {
+				?>
+			<div class="col medium-3 small-6 large-3">
+				<div class="col-inner">
+					<div class="img has-hover x md-x lg-x y md-y lg-y">
+						<div class="img-inner dark <?php echo esc_attr( ! in_array( $term_obj, $selected_sustainability_terms ) ? 'flatsome-child-dim-image' : '' ); ?>">
+							<img width="216" height="253" src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/' . $term_obj->slug . '.png' ); ?>" class="attachment-large size-large" alt="" loading="lazy">
+						</div>
+					</div>
+				</div>
+			</div>
+				<?php
+			}
+			?>
+
+		</div>
+	</section>
+	<?php
+}
+add_action( 'woocommerce_single_product_summary', 'flatsome_child_product_effects', 70 );

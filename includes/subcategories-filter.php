@@ -2,7 +2,7 @@
 /**
  * Inlcudes code to filter subcategory pages.
  *
- * @package category
+ * @package flatsome
  */
 
 // Exist if accessed directly.

@@ -25,8 +25,8 @@ button.wishlist-button {
     margin: 0 !important;
     height: 32px;
     width: 32px;
-    min-height: 32px;
-    min-width: 32px;
+    min-height: 32px!important;
+    min-width: 32px!important;
 }
 
 .product-small {
@@ -237,5 +237,16 @@ button.wishlist-button {
     .add_to_cart_button {
         padding: 0 1.2em;
         font-weight: 400;
+    }
+}
+
+.flatsome-child-dim-image {
+
+    img {
+        background-color: rgba(255, 255, 255, 0.686);
+        opacity: 0.3;
+        -webkit-filter: grayscale(100%);
+        /* Safari 6.0 - 9.0 */
+        filter: grayscale(100%);
     }
 }
