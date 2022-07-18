@@ -43,11 +43,11 @@ function flatsome_child_categories_filter() {
 
 	$query_args = isset( $_POST['query_args'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['query_args'] ) ), true ) : array();
 
-	$parent_cat_id   = get_term( (int) $query_args['currentPageCatID'] )->parent;
-	$parent_cat_slug = get_term( $parent_cat_id )->slug;
+	// $parent_cat_id   = get_term( (int) $query_args['currentPageCatID'] )->parent;
+	// $parent_cat_slug = get_term( $parent_cat_id )->slug;
 
-	$operator = 'brands' == $parent_cat_slug ?  'IN' : 'AND';
-
+	// $operator = 'brands' == $parent_cat_slug ?  'IN' : 'AND';
+	$operator = 'AND';
 
 	foreach ( $query_args as $key => $value ) {
 		array_push( $cat_id_array, $value );

@@ -167,13 +167,16 @@
 						<div class="ux-menu stack stack-col justify-start ux-menu--divider-solid" >
 						<?php
 						foreach ( $brands_sub_cats as $brands_sub_cat => $val ) {
-							?>
+
+							if ( $val->name !== $category_title ) {
+								?>
 								<div class="ux-menu-link flex menu-item flatsome-child-related-product-categories-item">
-									<a href="#" class="ux-menu-link__link flex current-menu-item flatsome-child-related-product-categories-link" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
+									<a href="<?php echo esc_url( get_category_link( $val ) ); ?>" class="ux-menu-link__link flex current-menu-item" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
 										<?php echo esc_html( $val->name ); ?>
 									</a>
 								</div>
-							<?php
+								<?php
+							}
 						}
 						?>
 						</div>
