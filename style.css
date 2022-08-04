@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*
 Theme Name: Flatsome Child
 Description: Flatsome's child theme for Myronja.
@@ -244,6 +245,67 @@ button.wishlist-button {
 	filter: grayscale(100%);
 }
 
+/*Custom Checkbox design. */
+input[type=checkbox].myronja-checkbox + label {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	font-weight: 400;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+.myronja-checkbox {
+	position: absolute;
+	left: -9999px;
+	opacity: 0;
+}
+
+.myronja-checkbox + label::before {
+	content: '';
+	width: 18px;
+	height: 18px;
+	margin-right: .5em;
+	border: 1px solid #ddd;
+}
+
+.myronja-checkbox + label:hover::before {
+	background-color: rgba(165, 154, 140, 0.7);
+}
+
+.myronja-checkbox:focus + label::before {
+	-webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+}
+
+.myronja-checkbox:checked + label::before {
+	content: '✔';
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	background-color: #a59a8c;
+	color: white;
+}
+
+.myronja-checkbox:disabled + label {
+	color: #AAA;
+	cursor: not-allowed;
+}
+
+.myronja-checkbox:disabled + label::before {
+	background-color: #CCC;
+	border-color: #999;
+}
+
 .flatsome-child-active-cat-filter {
 	border: solid 1px #aaaaaa;
 	background-color: #eee;
@@ -292,4 +354,40 @@ button.wishlist-button {
 
 .ux-menu {
 	margin-bottom: 20px;
+}
+
+.myronja-form-step-header {
+	text-align: center;
+	margin-top: 40px;
+}
+
+.myronja-form-step-header h3 {
+	margin-bottom: 20px;
+}
+
+.myronja-form-step-header p {
+	margin-bottom: 30px;
+}
+
+.myronja-hudtype-wrapper .col-inner,
+.myronja-hudtilstand-wrapper .col-inner,
+.myronja-product-type-wrapper .col-inner,
+.myronja-product-ingredients-wrapper .col-inner,
+.myronja-price-range-wrapper .col-inner {
+	position: relative;
+	left: 33.33%;
+}
+
+/*Multi step personal shopper form. */
+.myronja-form-steps-card {
+	min-height: 100vh;
+	width: 100%;
+	max-width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+	display: none;
+}
+
+.myronja-form-steps-card.active {
+	display: block;
 }

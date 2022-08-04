@@ -1,6 +1,6 @@
 <?php
 /**
- * Inlcudes code to filter subcategory pages.
+ * Inlcudes code related to custom taxonomies.
  *
  * @package flatsome
  */

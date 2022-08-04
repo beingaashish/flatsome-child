@@ -1,0 +1,25 @@
+.personal_shopper_options_panel {
+	position: relative;
+	min-height: 175px;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 9px;
+	color: #555;
+}
+
+.personal_shopper_options_panel label {
+	float: left;
+	width: 150px;
+	padding: 0;
+	margin: 0 0 0 -150px;
+}
+
+.personal_shopper_options_panel p.form-field {
+	padding: 5px 20px 5px 162px !important;
+}
+
+.personal_shopper_options_panel .short,
+.personal_shopper_options_panel input[type=number].short,
+.personal_shopper_options_panel input[type=text].short {
+	width: 80%;
+}

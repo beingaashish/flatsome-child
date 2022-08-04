@@ -29,6 +29,14 @@ const paths = {
         src: "./*.css",
         dest: "./",
     },
+	adminScss: {
+		src: ["./assets/admin/css/sass/*.scss"],
+		dest: "./assets/admin/css/",
+	},
+	adminPrefixStyles: {
+		src: ["./assets/admin/css/*.css"],
+		dest: "./assets/admin/css/",
+	},
     js: {
         src: ["./assets/js/*.js", "!./assets/js/*.min.js"],
         dest: "./assets/js/",
@@ -67,7 +75,7 @@ const paths = {
 
 const styles = gulp.series(compileSass, prefixStyles);
 const build  = gulp.series(styles, minifyJs);
-
+const adminStyles = gulp.series(compileAdminSass, adminPrefixStyles);
 
 // Compile SCSS into CSS.
 function compileSass() {
@@ -99,6 +107,36 @@ function prefixStyles() {
         .on("error", notify.onError());
 }
 
+// Compile Admin SCSS into CSS.
+function compileAdminSass() {
+	return gulp
+		.src(paths.adminScss.src)
+		.pipe(
+			sass({
+				indentType: "tab",
+				indentWidth: 1,
+				outputStyle: "expanded",
+			})
+		)
+		.pipe(lec({ verbose: true, eolc: "LF", encoding: "utf8" }))
+		.pipe(gulp.dest(paths.adminScss.dest))
+		.on("error", notify.onError());
+}
+
+// Prefixes Admin CSS.
+function adminPrefixStyles() {
+	return gulp
+		.src(paths.adminPrefixStyles.src)
+		.pipe(
+			autoprefixer({
+				overrideBrowserslist: ["last 2 versions"],
+				cascade: false,
+			})
+		)
+		.pipe(gulp.dest(paths.adminPrefixStyles.dest))
+		.on("error", notify.onError());
+}
+
 // Minify the js files.
 function minifyJs() {
     return gulp
@@ -112,6 +150,11 @@ function minifyJs() {
 // Watch for file changes.
 function watch() {
     gulp.watch(paths.scss.src, styles);
+}
+
+// Watch Admin Scss for file changes.
+function watchAdminScss() {
+	gulp.watch(paths.adminScss.src, adminStyles);
 }
 
 // Compress theme into a zip file.
@@ -136,3 +179,6 @@ exports.watch       = watch;
 exports.minifyJs    = minifyJs;
 exports.build       = build;
 exports.compressZip = compressZip;
+exports.compileAdminSass = compileAdminSass;
+exports.adminPrefixStyles = adminPrefixStyles;
+exports.watchAdminScss = watchAdminScss;

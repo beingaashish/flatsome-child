@@ -250,3 +250,53 @@ button.wishlist-button {
         filter: grayscale(100%);
     }
 }
+
+/*Custom Checkbox design. */
+input[type=checkbox].myronja-checkbox + label {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.myronja-checkbox {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+}
+
+.myronja-checkbox + label::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    margin-right: .5em;
+    border: 1px solid #ddd;
+}
+
+.myronja-checkbox + label:hover::before {
+    background-color: rgba( #a59a8c, 0.7 );
+}
+
+.myronja-checkbox:focus + label::before {
+    box-shadow: 0 0 20px 0 rgba( #000000, 0.2 );
+}
+
+.myronja-checkbox:checked + label::before {
+    content: '✔';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #a59a8c;
+    color: white;
+}
+
+.myronja-checkbox:disabled + label {
+    color: #AAA;
+    cursor: not-allowed;
+}
+
+.myronja-checkbox:disabled + label::before {
+    background-color: #CCC;
+    border-color: #999;
+}

@@ -1,0 +1,38 @@
+.myronja-form-step-header {
+    text-align: center;
+    margin-top: 40px;
+
+    h3 {
+        margin-bottom: 20px;
+    }
+
+    p {
+        margin-bottom: 30px;
+    }
+}
+
+.myronja-hudtype-wrapper,
+.myronja-hudtilstand-wrapper,
+.myronja-product-type-wrapper,
+.myronja-product-ingredients-wrapper,
+.myronja-price-range-wrapper {
+    .col-inner {
+        position: relative;
+        left: 33.33%;
+    }
+}
+
+
+/*Multi step personal shopper form. */
+.myronja-form-steps-card {
+    min-height: 100vh;
+    width: 100%;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    display: none;
+
+    &.active {
+        display: block;
+    }
+}
