@@ -68,7 +68,14 @@ add_action( 'wp_enqueue_scripts', 'flatsome_child_scripts' );
  * Enqueue scripts and styles in admin pages.
  */
 function flatsome_child_admin_scripts() {
-	if ( 'personal_shop' === get_current_screen()->post_type ) {
+	$current_screen = get_current_screen();
+	$suffix         = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+	wp_register_script( 'flatsome_child_metabox_scripts', get_stylesheet_directory_uri() . "/assets/admin/js/flatsome_child_metabox_scripts{$suffix}.js", array( 'jquery' ), FLATSOME_CHILD_VERSION, true );
+
+	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'personal_shop' === $current_screen->post_type ) {
+		wp_localize_script( 'flatsome_child_metabox_scripts', 'flatsomeChildMetaboxParams', apply_filters( 'personal_shopper_recommend_products_params', array() ) );
+		wp_enqueue_script( 'flatsome_child_metabox_scripts' );
 		wp_enqueue_style( 'flatsome_child_metabox_styles', get_stylesheet_directory_uri() . '/assets/admin/css/flatsome-child-metabox.css', array(), FLATSOME_CHILD_VERSION, 'all' );
 	}
 }

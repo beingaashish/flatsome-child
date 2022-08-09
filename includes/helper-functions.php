@@ -292,3 +292,92 @@ function flatsome_child_product_effects() {
 	<?php
 }
 add_action( 'woocommerce_single_product_summary', 'flatsome_child_product_effects', 70 );
+
+/**
+ * Parameters for admin/flatsom_child_metabox_scripts.js file
+ *
+ * @return array
+ */
+function personal_shopper_recommend_products_params() {
+	global $post;
+
+	$current_screen = get_current_screen();
+	$arr            = array();
+
+	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'personal_shop' === $current_screen->post_type ) {
+		$arr['ajaxUrl']                = admin_url( 'admin-ajax.php' );
+		$arr['baseUrl']                = get_home_url();
+		$arr['addShopProductNonce']    = wp_create_nonce( 'flatsome_child_add_shop_product_nonce' );
+		$arr['personalShopPostID']     = $post->ID;
+		$arr['personalShopProductIDS'] = get_post_meta( $post->ID, '_personal_shop_recommended_products_ids', false );
+	}
+	return $arr;
+}
+add_filter( 'personal_shopper_recommend_products_params', 'personal_shopper_recommend_products_params' );
+
+/**
+ * Adds extra fields to the JSON response.
+ *
+ * @return void
+ */
+function flatsome_child_custom_rest() {
+	register_rest_field(
+		'product',
+		'myronjaProductPrice',
+		array(
+			'get_callback' => function () {
+				$cur_product = wc_get_product();
+				return $cur_product->get_price();
+			},
+		)
+	);
+
+	register_rest_field(
+		'product',
+		'myronjaProductAmount',
+		array(
+			'get_callback' => function () {
+				$cur_product = wc_get_product();
+				return get_post_meta( $cur_product->get_id(), '_myronja_product_quantity', true );
+			},
+		)
+	);
+
+	register_rest_field(
+		'product',
+		'myronjaProductBrand',
+		array(
+			'get_callback' => function () {
+				$cur_product = wc_get_product();
+				$brand_cat   = get_term_by( 'slug', 'brands', 'product_cat' );
+
+				$taxonomies = array(
+					'taxonomy' => 'product_cat',
+				);
+
+				$args = array(
+					'child_of'   => $brand_cat->term_id,
+					'hide_empty' => true,
+					'object_ids' => $cur_product->get_id(),
+				);
+
+				$brand_obj = get_terms( $taxonomies, $args );
+
+				return $brand_obj[0]->name;
+			},
+		)
+	);
+
+	register_rest_field(
+		'product',
+		'myronjaProductThumbnailSrc',
+		array(
+			'get_callback' => function () {
+				$cur_product = wc_get_product();
+				$image_src   = wp_get_attachment_image_src( get_post_thumbnail_id( $cur_product->get_id() ), 'thumbnail' );
+				return $image_src;
+			},
+		),
+	);
+}
+add_action( 'rest_api_init', 'flatsome_child_custom_rest' );

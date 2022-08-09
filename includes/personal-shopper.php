@@ -615,3 +615,52 @@ function personal_shopper_create_post() {
 }
 add_action( 'wp_ajax_personal_shopper_create_post', 'personal_shopper_create_post' );
 add_action( 'wp_ajax_nopriv_personal_shopper_create_post', 'personal_shopper_create_post' );
+
+/**
+ * Fires when admin adds recommendation products for user in personal shop.
+ *
+ * @return void
+ */
+function personal_shopper_add_user_products_to_meta () {
+	if ( ! is_user_logged_in() ) {
+		return;
+	}
+
+	if ( check_ajax_referer( 'flatsome_child_add_shop_product_nonce', 'nonce' ) ) {
+		$product_action        = isset( $_POST['productAction'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['productAction'] ) ), true ) : '';
+		$personal_shop_post_id = isset( $_POST['personalShopPostID'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['personalShopPostID'] ) ), true ) : '';
+		$product_id            = isset( $_POST['productId'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['productId'] ) ), true ) : '';
+		$product_ids           = get_post_meta( $personal_shop_post_id,'_personal_shop_recommended_products_ids', false );
+
+		if ( 'add-product' == $product_action ) {
+
+			if ( ! empty( $product_ids ) && ! in_array( $product_id, $product_ids ) ) {
+					add_post_meta(
+						$personal_shop_post_id,
+						'_personal_shop_recommended_products_ids',
+						$product_id,
+					);
+			}
+
+			if ( empty( $product_ids ) ) {
+				add_post_meta(
+					$personal_shop_post_id,
+					'_personal_shop_recommended_products_ids',
+					$product_id,
+				);
+			}
+		} elseif ( 'remove-product' == $product_action ) {
+			error_log( print_r( $product_ids, true ) );
+			error_log( print_r( $product_id, true ) );
+			if ( ! empty( $product_ids ) && in_array( $product_id, $product_ids ) ) {
+				delete_post_meta(
+					$personal_shop_post_id,
+					'_personal_shop_recommended_products_ids',
+					$product_id,
+				);
+			}
+		}
+	}
+}
+add_action( 'wp_ajax_personal_shopper_add_user_products_to_meta', 'personal_shopper_add_user_products_to_meta' );
+add_action( 'wp_ajax_nopriv_personal_shopper_add_user_products_to_meta', 'personal_shopper_add_user_products_to_meta' );

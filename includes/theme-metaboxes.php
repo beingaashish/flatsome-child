@@ -38,6 +38,14 @@ function flatsome_child_add_meta_box() {
 		'personal_shopper_display_product_recommend_metabox',
 		'personal_shop',
 	);
+
+	// Additional metaboxes for personal shopper admin comments.
+	add_meta_box(
+		'personal_shopper_admin_comments_metabox',
+		__( 'Admin comments based on user inputs', 'woocommerce' ),
+		'personal_shopper_display_admin_comments_metabox',
+		'personal_shop',
+	);
 }
 add_action( 'add_meta_boxes', 'flatsome_child_add_meta_box' );
 
@@ -202,7 +210,7 @@ function personal_shopper_display_metabox( $post ) {
 		</p>
 		<p class="form-field">
 			<label for="_personal_shop_order_status"><?php echo __( 'Order Status', 'woocommerce' ); ?></label>
-			<input type="text" id="_personal_shop_order_status" name="_personal_shop_order_status" class="short" value="<?php echo esc_html( $personal_shop_order_status ); ?>" readonly>
+			<input type="text" id="_personal_shop_order_status" name="_personal_shop_order_status" class="short" value="<?php echo esc_html( $personal_shop_order_status ); ?>">
 		</p>
 		<p class="form-field">
 			<label for="_personal_shop_price_range"><?php echo __( 'Price range', 'woocommerce' ); ?></label>
@@ -255,33 +263,35 @@ function personal_shopper_display_metabox( $post ) {
  * @return void
  */
 function flatsome_child_personal_shop_meta( $post_id ) {
-	// if ( ! ( 'personal_shop' === get_current_screen()->post_type ) ) {
-	// 	return;
-	// }
 
-	$is_autosave = wp_is_post_autosave( $post_id );
-	$is_revision = wp_is_post_revision( $post_id );
+	$current_screen = get_current_screen();
 
-	$is_valid_nonce = false;
+	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'personal_shop' === $current_screen->post_type ) {
 
-	if ( isset( $_POST['flatsome_child_meta_box_nonce'] ) ) {
-		if ( wp_verify_nonce( wp_unslash( $_POST['personal_shop_meta_box_nonce'] ), basename( __FILE__ ) ) ) {
-			$is_valid_nonce = true;
+		$is_autosave = wp_is_post_autosave( $post_id );
+		$is_revision = wp_is_post_revision( $post_id );
+
+		$is_valid_nonce = false;
+
+		if ( isset( $_POST['personal_shop_meta_box_nonce'] ) ) {
+			if ( wp_verify_nonce( wp_unslash( $_POST['personal_shop_meta_box_nonce'] ), basename( __FILE__ ) ) ) {
+				$is_valid_nonce = true;
+			}
 		}
-	}
 
-	if ( $is_autosave || $is_revision || ! $is_valid_nonce ) {
-		return;
-	}
+		if ( $is_autosave || $is_revision || ! $is_valid_nonce ) {
+			return;
+		}
 
-	// Product serial number.
-	if ( array_key_exists( '_personal_shop_order_number', $_POST ) ) {
+		// Personal shop order status.
+		if ( array_key_exists( '_personal_shop_order_status', $_POST ) ) {
 
-		update_post_meta(
-			$post_id,
-			'_personal_shop_order_number',
-			sanitize_text_field( wp_unslash( $_POST['_personal_shop_order_number'] ) ),
-		);
+			update_post_meta(
+				$post_id,
+				'_personal_shop_order_status',
+				sanitize_text_field( wp_unslash( $_POST['_personal_shop_order_status'] ) ),
+			);
+		}
 	}
 }
 add_action( 'save_post', 'flatsome_child_personal_shop_meta' );
@@ -291,6 +301,144 @@ add_action( 'save_post', 'flatsome_child_personal_shop_meta' );
  *
  * @return void
  */
-function personal_shopper_display_product_recommend_metabox() {
+function personal_shopper_display_product_recommend_metabox( $post ) {
+	$post_id = $post->ID;
+	?>
+	<div class="personal_shopper_options_panel--seach">
+		<p class="form-field">
+			<label for="myronja-search-term"><?php echo __( 'Search products to recommend', 'woocommerce' ); ?></label>
+			<div class="myronja-search-wrapper">
+				<span class="myronja-search-icon dashicons dashicons-search"></span>
+				<input type="text" id="myronja-search-term" name="" class="myronja-search-term" placeholder="Search..." autocomplete="off">
+				<div class="myronja-search-results" id="myronja-search-results">
+				</div>
+			</div>
+			<div class="myronja-products-display">
+				<ul class="myronja-products-list">
+					<h2><?php esc_html_e( 'Personal shop recommended products', 'woocommerce' ); ?></h2>
+					<?php
+					$products_ids = get_post_meta( $post_id, '_personal_shop_recommended_products_ids', false );
 
+					if ( $products_ids && is_array( $products_ids ) && ! empty( $products_ids ) ) {
+						foreach ( $products_ids as $key => $value ) {
+							$product   = wc_get_product( $value );
+							$image_src = wp_get_attachment_image_src( get_post_thumbnail_id( $value ), 'thumbnail' );
+							?>
+						<li class="myronja-products-item" id="product-item-<?php echo esc_html( $value ); ?>">
+							<figure class="myronja-products-item__product-image"><img src="<?php echo esc_attr( $image_src[0] ); ?>"></figure>
+							<p class="myronja-products-item__product-title"><?php echo esc_html( $product->get_name() ); ?></p>
+							<p class="myronja-products-item__product-amount"><?php echo esc_html( get_post_meta( $value, '_myronja_product_quantity', true ) ); ?></p>
+							<p class="myronja-products-item__product-price"><?php echo esc_html( $product->get_price() ); ?></p>
+							<div class="myronja-products-item__action-wrapper">
+								<a href="#" button class="myronja-remove-from-shop button button-primary" id="<?php echo esc_attr( 'myronja-remove-from-shop-' . $value ); ?>"
+								data-product-id="<?php echo esc_html( $value ); ?>"
+								data-product-thumbnail="<?php echo esc_attr( $image_src[0] ); ?>"
+								data-product-title="<?php echo esc_html( $product->get_name() ); ?>"
+								data-product-price="<?php echo esc_html( $product->get_price() ); ?>"
+								data-product-amount="<?php echo esc_html( get_post_meta( $value, '_myronja_product_quantity', true ) ); ?>"
+								data-product-action="remove-product">
+									<?php esc_html_e( 'Remove Product', 'woocommerce' ); ?>
+								</a>
+							</div>
+						</li>
+							<?php
+						}
+					} else {
+						?>
+						<p><?php esc_html_e( 'Recommended products will be shown here', 'woocommerce' ); ?></p>
+						<?php
+					}
+					?>
+				</ul>
+				</div>
+		</p>
+	</div>
+		<?php
 }
+
+/**
+ * Callback for admin comments metabox.
+ *
+ * @return void
+ */
+function personal_shopper_display_admin_comments_metabox( $post ) {
+	$post_id                          = $post->ID;
+	$personal_shop_comment_focus_area = get_post_meta( $post_id, '_personal_shop_comment_focus_area', true );
+	$personal_shop_comment_skin_type  = get_post_meta( $post_id, '_personal_shop_comment_skin_type', true );
+	$personal_shop_comment_general    = get_post_meta( $post_id, '_personal_shop_comment_general', true );
+
+	wp_nonce_field( basename( __FILE__ ), 'personal_shop_admin_comments_metabox' );
+	?>
+	<div class="personal_shopper_options_panel">
+		<p class="form-field">
+			<label for="_personal_shop_comment_focus_area" class="myronja_meta_field_title"><?php echo __( 'På baggrund af fokusområde', 'woocommerce' ); ?></label>
+			<textarea style="min-height: 200px" class="short" name="_personal_shop_comment_focus_area" id="_personal_shop_comment_focus_area"><?php echo esc_html( $personal_shop_comment_focus_area ); ?></textarea>
+		</p>
+		<p class="form-field">
+			<label for="_personal_shop_comment_skin_type" class="myronja_meta_field_title"><?php echo __( 'På baggrund af hudtype', 'woocommerce' ); ?></label>
+			<textarea style="min-height: 200px" class="short" name="_personal_shop_comment_skin_type" id="_personal_shop_comment_skin_type"><?php echo esc_html( $personal_shop_comment_skin_type ); ?></textarea>
+		</p>
+		<p class="form-field">
+			<label for="_personal_shop_comment_general" class="myronja_meta_field_title"><?php echo __( 'Kommentar', 'woocommerce' ); ?></label>
+			<textarea style="min-height: 200px" class="short" name="_personal_shop_comment_general" id="_personal_shop_comment_general"><?php echo esc_html( $personal_shop_comment_general ); ?></textarea>
+		</p>
+	</div>
+	<?php
+}
+
+/**
+ * Saves personal_shopper_display_admin_comments_metabox contents.
+ *
+ * @return void
+ */
+function personal_shopper_admin_comments_metabox( $post_id ) {
+	$current_screen = get_current_screen();
+
+	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'personal_shop' === $current_screen->post_type ) {
+
+		$is_autosave    = wp_is_post_autosave( $post_id );
+		$is_revision    = wp_is_post_revision( $post_id );
+		$is_valid_nonce = false;
+
+		if ( isset( $_POST['personal_shop_admin_comments_metabox'] ) ) {
+			if ( wp_verify_nonce( wp_unslash( $_POST['personal_shop_admin_comments_metabox'] ), basename( __FILE__ ) ) ) {
+				$is_valid_nonce = true;
+			}
+		}
+
+		if ( $is_autosave || $is_revision || ! $is_valid_nonce ) {
+			return;
+		}
+
+		// Comment on focus area.
+		if ( array_key_exists( '_personal_shop_comment_focus_area', $_POST ) ) {
+
+			update_post_meta(
+				$post_id,
+				'_personal_shop_comment_focus_area',
+				sanitize_text_field( wp_unslash( $_POST['_personal_shop_comment_focus_area'] ) ),
+			);
+		}
+
+		// Comment on skin type.
+		if ( array_key_exists( '_personal_shop_comment_skin_type', $_POST ) ) {
+
+			update_post_meta(
+				$post_id,
+				'_personal_shop_comment_skin_type',
+				sanitize_text_field( wp_unslash( $_POST['_personal_shop_comment_skin_type'] ) ),
+			);
+		}
+
+		// General comments.
+		if ( array_key_exists( '_personal_shop_comment_general', $_POST ) ) {
+
+			update_post_meta(
+				$post_id,
+				'_personal_shop_comment_general',
+				sanitize_text_field( wp_unslash( $_POST['_personal_shop_comment_general'] ) ),
+			);
+		}
+	}
+}
+add_action( 'save_post', 'personal_shopper_admin_comments_metabox' );
