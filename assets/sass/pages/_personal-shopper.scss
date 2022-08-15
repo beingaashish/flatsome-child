@@ -36,3 +36,125 @@
         display: block;
     }
 }
+
+/* Personal Shopper Myaccount. */
+.myronja-myaccount-personal-shop-table-headings {
+    margin-top: 50px;
+}
+
+.myronja-myaccount-personal-shop-table-heading {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    text-transform: uppercase;
+
+    &__order-number {
+        flex-basis: 20%;
+    }
+
+    &__order-date {
+        flex-basis: 35%;
+    }
+
+    &__order-status {
+        flex-basis: 25%;
+    }
+
+    &__price-range {
+        flex-basis: 20%;
+    }
+}
+
+.myronja-myaccount-personal-shop-item {
+    display: flex;
+    align-items: center;
+
+    & > * {
+        padding: 5px;
+        padding-left: 0;
+    }
+
+    &__order-number {
+        flex-basis: 20%;
+    }
+
+    &__order-date {
+        flex-basis: 35%;
+    }
+
+    &__order-status {
+        flex-basis: 25%;
+    }
+
+    &__price-range {
+        flex-basis: 20%;
+    }
+}
+
+
+
+/* Personal shop custom cart. */
+@media (max-width: 549px) {
+.personal-shop-cart_table .personal-shop__product-subtotal {
+        display: none;
+    }
+}
+
+td.personal-shop__product-select {
+    padding-right: 0;
+    width: 25px;
+}
+
+td.personal-shop__product-thumbnail {
+    width: 120px;
+}
+
+.personal-shop__product-image {
+    margin: 0;
+    max-width: 100px;
+    max-height: 120px;
+    overflow: hidden;
+
+    img {
+        display: block;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+
+    }
+}
+
+.personal-shop-user-answers {
+    display: none;
+
+    .answer-section {
+        margin-bottom: 30px;
+    }
+
+    &__toggle {
+        margin-bottom: 30px;
+
+        text-align: center;
+        a {
+            position: relative;
+            padding-bottom: 12px;
+            display: block;
+            &::after {
+                content: '';
+                height: 10px;
+                width: 10px;
+                background: transparent;
+                transform: rotate(45deg);
+                border-bottom: currentColor solid 1px;
+                border-right: currentColor solid 1px;
+                position: absolute;
+                bottom: 0px;
+                left: 50%;
+                }
+        }
+    }
+
+    &--is-visible {
+        display: block;
+    }
+}

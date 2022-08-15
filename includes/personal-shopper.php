@@ -621,7 +621,7 @@ add_action( 'wp_ajax_nopriv_personal_shopper_create_post', 'personal_shopper_cre
  *
  * @return void
  */
-function personal_shopper_add_user_products_to_meta () {
+function personal_shopper_add_user_products_to_meta() {
 	if ( ! is_user_logged_in() ) {
 		return;
 	}
@@ -630,7 +630,7 @@ function personal_shopper_add_user_products_to_meta () {
 		$product_action        = isset( $_POST['productAction'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['productAction'] ) ), true ) : '';
 		$personal_shop_post_id = isset( $_POST['personalShopPostID'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['personalShopPostID'] ) ), true ) : '';
 		$product_id            = isset( $_POST['productId'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['productId'] ) ), true ) : '';
-		$product_ids           = get_post_meta( $personal_shop_post_id,'_personal_shop_recommended_products_ids', false );
+		$product_ids           = get_post_meta( $personal_shop_post_id, '_personal_shop_recommended_products_ids', false );
 
 		if ( 'add-product' == $product_action ) {
 
@@ -650,8 +650,6 @@ function personal_shopper_add_user_products_to_meta () {
 				);
 			}
 		} elseif ( 'remove-product' == $product_action ) {
-			error_log( print_r( $product_ids, true ) );
-			error_log( print_r( $product_id, true ) );
 			if ( ! empty( $product_ids ) && in_array( $product_id, $product_ids ) ) {
 				delete_post_meta(
 					$personal_shop_post_id,
@@ -664,3 +662,158 @@ function personal_shopper_add_user_products_to_meta () {
 }
 add_action( 'wp_ajax_personal_shopper_add_user_products_to_meta', 'personal_shopper_add_user_products_to_meta' );
 add_action( 'wp_ajax_nopriv_personal_shopper_add_user_products_to_meta', 'personal_shopper_add_user_products_to_meta' );
+
+/** Code for adding Personal Shop in My Account Page. */
+/**
+ * Register New Endpoint.
+ *
+ * @return void.
+ */
+function personal_shopper_endpoint() {
+	add_rewrite_endpoint( 'myronja-myaccount-personal-shopper', EP_ROOT | EP_PAGES );
+}
+add_action( 'init', 'personal_shopper_endpoint' );
+
+/**
+ * Add new query var.
+ *
+ * @param array $vars vars.
+ *
+ * @return array An array of items.
+ */
+function personal_shopper_query_vars( $vars ) {
+	$vars[] = 'myronja-myaccount-personal-shopper';
+	return $vars;
+}
+add_filter( 'query_vars', 'personal_shopper_query_vars' );
+
+/**
+ * Add Personal Shop in my account page.
+ *
+ * @param array $items myaccount Items.
+ *
+ * @return array Items including Personal Shop.
+ */
+function myronja_myaccount_new_item_tab( $items ) {
+	$items['myronja-myaccount-personal-shopper'] = 'Personal Shopper';
+	return $items;
+}
+add_filter( 'woocommerce_account_menu_items', 'myronja_myaccount_new_item_tab' );
+
+/**
+ * Add content to the new tab.
+ *
+ * @return  string.
+ */
+function myronja_myaccount_personal_shopper_content() {
+	?>
+	<h1><?php esc_html_e( 'Personal Shop Orders', 'woocommerce' ); ?></h1>
+	<ul class="myronja-myaccount-personal-shop-table-headings">
+		<li class="myronja-myaccount-personal-shop-table-heading">
+			<div class="myronja-myaccount-personal-shop-table-heading__order-number">
+			<?php esc_html_e( 'Ordre Nr', 'woocommerce' ); ?>
+			</div>
+			<div class="myronja-myaccount-personal-shop-table-heading__order-date">
+			<?php esc_html_e( 'Ordre Dato', 'woocommerce' ); ?>
+			</div>
+			<div class="myronja-myaccount-personal-shop-table-heading__order-status">
+			<?php esc_html_e( 'Status', 'woocommerce' ); ?>
+			</div>
+			<div class="myronja-myaccount-personal-shop-table-heading__price-range">
+			<?php esc_html_e( 'Pakke', 'woocommerce' ); ?>
+			</div>
+		</li>
+	</ul>
+	<ul class="myronja-myaccount-personal-shop-list">
+		<?php
+
+		$args = array(
+			'post_type' => 'personal_shop',
+			'order'     => 'ASC',
+			'author'    => get_current_user_id(),
+		);
+
+		$the_query = new WP_Query( $args );
+
+		if ( $the_query->have_posts() ) :
+
+			while ( $the_query->have_posts() ) :
+				$the_query->the_post();
+
+				$post_id = get_the_ID();
+
+				$order_number = get_post_meta( $post_id, '_personal_shop_order_number', true );
+				$order_date   = get_post_meta( $post_id, '_personal_shop_order_date', true );
+				$order_status = get_post_meta( $post_id, '_personal_shop_order_status', true );
+				$order_price  = get_post_meta( $post_id, '_personal_shop_price_range', true );
+				?>
+
+				<li class="myronja-myaccount-personal-shop-item">
+					<div class="myronja-myaccount-personal-shop-item__order-number">
+						<a href="<?php the_permalink(); ?>"><?php echo esc_html( $order_number ); ?></a>
+					</div>
+					<div class="myronja-myaccount-personal-shop-item__order-date">
+						<?php echo esc_html( $order_date ); ?>
+					</div>
+					<div class="myronja-myaccount-personal-shop-item__order-status">
+						<?php echo esc_html( $order_status ); ?>
+					</div>
+					<div class="myronja-myaccount-personal-shop-item__price-range">
+					<?php echo esc_html( $order_price ); ?>
+					</div>
+				</li>
+				<?php
+				endwhile;
+				wp_reset_postdata();
+		else :
+		endif;
+		?>
+
+	</ul>
+	<?php
+}
+add_action( 'woocommerce_account_myronja-myaccount-personal-shopper_endpoint', 'myronja_myaccount_personal_shopper_content' );
+
+
+/**
+ * Parameters for flatsome-child-personal-shopper-myaccount-script.js file
+ *
+ * @return array
+ */
+function personal_shopper_myaccount_params() {
+	$arr['ajaxUrl']                = admin_url( 'admin-ajax.php' );
+	$arr['personalMyAccountNonce'] = wp_create_nonce( 'flatsome_child_personal_myaccount_nonce' );
+
+	return $arr;
+}
+add_filter( 'personal_shopper_myaccount_params', 'personal_shopper_myaccount_params' );
+
+
+/**
+ * Undocumented function.
+ *
+ * @return void
+ */
+function personal_shopper_myaccount () {
+	if ( ! is_user_logged_in() || ! class_exists( 'WooCommerce' ) ) {
+		return;
+	}
+
+	if ( check_ajax_referer( 'flatsome_child_personal_myaccount_nonce', 'nonce' ) ) {
+		global $woocommerce;
+
+		$form_fields_data = isset( $_POST['formFields'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['formFields'] ) ), true ) : array();
+		foreach ( $form_fields_data as $product_id => $qty ) {
+
+			// Validate.
+			$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $qty );
+			$product_status    = get_post_status( $product_id );
+
+			if ( $passed_validation && false !== $woocommerce->cart->add_to_cart( $product_id, $qty ) && 'publish' === $product_status ) {
+
+			}
+		}
+	}
+}
+add_action( 'wp_ajax_personal_shopper_myaccount', 'personal_shopper_myaccount' );
+add_action( 'wp_ajax_nopriv_personal_shopper_myaccount', 'personal_shopper_myaccount' );

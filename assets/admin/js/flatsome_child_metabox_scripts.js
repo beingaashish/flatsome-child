@@ -69,25 +69,27 @@ const personalShopperSearch = (
             <h2>Search Results</h2>
             <ul class="myronja-search-results__list">
               ${products.map(product => {
-              return (
-                `<li class="myronja-search-results__list-item" id="product-item-${product.id}">
-                      <figure class="myronja-search-results__product-image"><img src="${product.myronjaProductThumbnailSrc[0]}"></figure>
-                      <p class="myronja-search-results__product-brand">${product.myronjaProductBrand}</p>
-                      <p class="myronja-search-results__product-title">${product.title.rendered}</p>
-                      <p class="myronja-search-results__product-amount">${product.myronjaProductAmount}</p>
-                      <p class="myronja-search-results__product-price">${product.myronjaProductPrice}</p>
-                      <div class="myronja-search-results__action-wrapper">
-                        <a href="#" button class="myronja-add-to-shop button button-primary" id="myronja-add-to-shop-${product.id}"
-                        data-product-id="${product.id}"
-                        data-product-thumbnail="${product.myronjaProductThumbnailSrc[0]}"
-                        data-product-brand="${product.myronjaProductBrand}"
-                        data-product-title="${product.title.rendered}"
-                        data-product-price="${product.myronjaProductPrice}"
-                        data-product-amount="${product.myronjaProductAmount}"
-                        data-product-action="add-product">Add Product</a>
-                      </div>
-                  </li>`
-              );
+                if ( product.myronjaProductStockStatus == 'true' ) {
+                  return (
+                    `<li class="myronja-search-results__list-item" id="product-item-${product.id}">
+                          <figure class="myronja-search-results__product-image"><img src="${product.myronjaProductThumbnailSrc[0]}"></figure>
+                          <p class="myronja-search-results__product-brand">${product.myronjaProductBrand}</p>
+                          <p class="myronja-search-results__product-title">${product.title.rendered}</p>
+                          <p class="myronja-search-results__product-amount">${product.myronjaProductAmount}</p>
+                          <p class="myronja-search-results__product-price">${product.myronjaProductPrice}</p>
+                          <div class="myronja-search-results__action-wrapper">
+                            <a href="#" button class="myronja-add-to-shop button button-primary" id="myronja-add-to-shop-${product.id}"
+                            data-product-id="${product.id}"
+                            data-product-thumbnail="${product.myronjaProductThumbnailSrc[0]}"
+                            data-product-brand="${product.myronjaProductBrand}"
+                            data-product-title="${product.title.rendered}"
+                            data-product-price="${product.myronjaProductPrice}"
+                            data-product-amount="${product.myronjaProductAmount}"
+                            data-product-action="add-product">Add Product</a>
+                          </div>
+                      </li>`
+                  );
+                }
             }).join('')}
             </ul>`;
 
@@ -254,8 +256,6 @@ const personalShopperAfterProductsLoadedOnDisplay = (
               // Remove from front end.
               shopProductsDisplay.removeChild(itemToRemove);
             }
-
-
         }
       }
     });

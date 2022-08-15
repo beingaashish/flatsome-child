@@ -379,5 +379,16 @@ function flatsome_child_custom_rest() {
 			},
 		),
 	);
+
+	register_rest_field(
+		'product',
+		'myronjaProductStockStatus',
+		array(
+			'get_callback' => function () {
+				$cur_product = wc_get_product();
+				return $cur_product->is_in_stock();
+			},
+		),
+	);
 }
 add_action( 'rest_api_init', 'flatsome_child_custom_rest' );

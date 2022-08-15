@@ -1,5 +1,3 @@
-console.log(flatsomeChildPersonalShopperParam);
-
 const personalShopperForm = (
 	function ( $ ) {
 
@@ -49,8 +47,6 @@ const personalShopperForm = (
 			$.post(ajaxUrl, data, function (data) {
 				console.log(data);
 			});
-
-
 		}
 
 		return {
