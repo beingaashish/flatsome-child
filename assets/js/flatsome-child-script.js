@@ -74,7 +74,7 @@ const multiStepForm = (
 						currentStep += incrementor;
 						displayActiveFormStep();
 					} else {
-						console.log('error message');
+
 					}
 
 				} else if ( e.target.matches( '[data-previous]' ) ) {
@@ -111,8 +111,11 @@ const multiStepForm = (
 
 		return {
 			init: function () {
-				setActiveCard();
-				setEvents();
+
+				if ( DOMStrings.myronjaMultiForm != undefined ) {
+					setActiveCard();
+					setEvents();
+				}
 			}
 		}
 	}

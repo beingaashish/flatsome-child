@@ -41,6 +41,10 @@ const paths = {
         src: ["./assets/js/*.js", "!./assets/js/*.min.js"],
         dest: "./assets/js/",
     },
+    adminJs: {
+        src: ["./assets/admin/js/*.js", "!./assets/admin/js/*.min.js"],
+        dest: "./assets/admin/js/",
+    },
     zip: {
         src: [
             '**',
@@ -147,6 +151,15 @@ function minifyJs() {
         .on("error", notify.onError());
 }
 
+function minifyAdminJS () {
+    return gulp
+        .src(paths.adminJs.src)
+        .pipe(uglify())
+        .pipe(rename({ suffix: ".min" }))
+        .pipe(gulp.dest(paths.adminJs.dest))
+        .on("error", notify.onError());
+}
+
 // Watch for file changes.
 function watch() {
     gulp.watch(paths.scss.src, styles);
@@ -175,10 +188,11 @@ function compressZip() {
         );
 }
 
-exports.watch       = watch;
-exports.minifyJs    = minifyJs;
-exports.build       = build;
-exports.compressZip = compressZip;
-exports.compileAdminSass = compileAdminSass;
+exports.watch             = watch;
+exports.minifyJs          = minifyJs;
+exports.minifyAdminJS     = minifyAdminJS;
+exports.compressZip       = compressZip;
+exports.compileAdminSass  = compileAdminSass;
 exports.adminPrefixStyles = adminPrefixStyles;
-exports.watchAdminScss = watchAdminScss;
+exports.watchAdminScss    = watchAdminScss;
+exports.build             = build;

@@ -253,8 +253,6 @@ const personalShopperAfterProductsLoadedOnDisplay = (
             });
 
             if ( undefined != itemToRemove ) {
-              console.log(typeof itemToRemove);
-
               // Remove from front end.
               shopProductsDisplay.removeChild(itemToRemove);
             }
