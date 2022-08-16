@@ -15,7 +15,8 @@
 .myronja-hudtilstand-wrapper,
 .myronja-product-type-wrapper,
 .myronja-product-ingredients-wrapper,
-.myronja-price-range-wrapper {
+.myronja-price-range-wrapper,
+.myronja-mail-request-wrapper {
     .col-inner {
         position: relative;
         left: 33.33%;
@@ -34,6 +35,11 @@
 
     &.active {
         display: block;
+    }
+
+    &__footer-buttons {
+        display: flex;
+        justify-content: space-evenly;
     }
 }
 

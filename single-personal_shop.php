@@ -14,9 +14,9 @@ get_header();
 // Pesonal Shop Post data.
 $personal_shop_id   = get_the_ID();
 $product_ids        = get_post_meta( $personal_shop_id, '_personal_shop_recommended_products_ids', false );
-$comment_focus_area = get_post_meta( $post_id, '_personal_shop_comment_focus_area', true );
-$comment_skin_type  = get_post_meta( $post_id, '_personal_shop_comment_skin_type', true );
-$comment_general    = get_post_meta( $post_id, '_personal_shop_comment_general', true );
+$comment_focus_area = get_post_meta( $personal_shop_id, '_personal_shop_comment_focus_area', true );
+$comment_skin_type  = get_post_meta( $personal_shop_id, '_personal_shop_comment_skin_type', true );
+$comment_general    = get_post_meta( $personal_shop_id, '_personal_shop_comment_general', true );
 ?>
 
 <div id="content" class="container blog-wrapper blog-single page-wrapper personal-shop-wrapper">
@@ -74,7 +74,7 @@ if ( ! empty( $product_ids ) ) :
 			?>
 			<tr>
 				<td class="actions clear" colspan="5">
-					<button type="submit" class="button primary is-outline pull-right"><?php esc_html_e( 'Tilføj valgte produkter til kurv &#10230;', 'woocommerce' ); ?></button>
+					<button type="submit" id="personal-shop_form-submit-btn" class="button primary is-outline pull-right personal-shop_form-submit-btn"><?php esc_html_e( 'Tilføj valgte produkter til kurv &#10230;', 'woocommerce' ); ?></button>
 				</td>
 			</tr>
 		</tbody>
@@ -84,7 +84,7 @@ if ( ! empty( $product_ids ) ) :
 	<?php if ( $comment_focus_area ) : ?>
 	<section class="personal-shop-recommendation">
 			<h2><?php esc_html_e( 'På baggrund af fokusområde', 'woocommerce' ); ?></h2>
-			<textarea style="min-height: 200px" class="short" name="" id="" readonly><?php echo esc_html( $personal_shop_comment_focus_area ); ?></textarea>
+			<textarea style="min-height: 200px" class="short" name="" id="" readonly><?php echo esc_html( $comment_focus_area ); ?></textarea>
 	</section>
 	<?php endif; ?>
 	<?php if ( $comment_skin_type ) : ?>
@@ -222,7 +222,7 @@ if ( ! empty( $product_ids ) ) :
 			<div class="row">
 				<?php
 				$personal_shop_price_range    = get_post_meta( $personal_shop_id, '_personal_shop_price_range', true );
-				$personal_shop_user_awareness = get_post_meta( $post_id, '_personal_shop_user_awareness', true );
+				$personal_shop_user_awareness = get_post_meta( $personal_shop_id, '_personal_shop_user_awareness', true );
 
 				if ( $personal_shop_price_range ) {
 					$personal_shop_price_range_arr = explode( ',', $personal_shop_price_range );

@@ -124,7 +124,7 @@ function myronja_personal_shopper_form_cb() {
 						<textarea name="myronja-user-goals" id="myronja-user-goals" cols="30" rows="10" class="myronja-textarea"></textarea>
 				</div>
 				<div class="myronja-form-steps-card__footer-buttons">
-					<button type="button" data-next>Next</button>
+					<button class="button primary is-underline" type="button" data-next>Next</button>
 				</div>
 			</div>
 
@@ -176,7 +176,7 @@ function myronja_personal_shopper_form_cb() {
 				</div>
 				<div class="myronja-form-steps-card__footer-buttons">
 					<button type="button" data-previous>Previous</button>
-					<button type="button" data-next>Next</button>
+					<button class="button primary is-underline" type="button" data-next>Next</button>
 				</div>
 			</div>
 
@@ -228,7 +228,7 @@ function myronja_personal_shopper_form_cb() {
 				</div>
 				<div class="myronja-form-steps-card__footer-buttons">
 					<button type="button" data-previous>Previous</button>
-					<button type="button" data-next=>Next</button>
+					<button class="button primary is-underline" type="button" data-next=>Next</button>
 				</div>
 			</div>
 
@@ -295,7 +295,7 @@ function myronja_personal_shopper_form_cb() {
 				</div>
 				<div class="myronja-form-steps-card__footer-buttons">
 					<button type="button" data-previous>Previous</button>
-					<button type="button" data-next>Next</button>
+					<button class="button primary is-underline" type="button" data-next>Next</button>
 				</div>
 			</div>
 
@@ -316,7 +316,7 @@ function myronja_personal_shopper_form_cb() {
 				</div>
 				<div class="myronja-form-steps-card__footer-buttons">
 					<button type="button" data-previous>Previous</button>
-					<button type="button" data-next>Next</button>
+					<button class="button primary is-underline" type="button" data-next>Next</button>
 				</div>
 			</div>
 
@@ -345,7 +345,7 @@ function myronja_personal_shopper_form_cb() {
 						</div>
 						<div class="col medium-4 small-12 large-4">
 							<div class="col-inner">
-								<input type="radio" name="pricerange" id="mid" value="mid" class="myronja-radio">
+								<input type="radio" name="pricerange" id="mid" value="mid" class="myronja-radio" checked>
 								<label for="mid" class="myronja-label">500-1000 kr</label>
 							</div>
 						</div>
@@ -359,11 +359,47 @@ function myronja_personal_shopper_form_cb() {
 				</div>
 				<div class="myronja-form-steps-card__footer-buttons">
 					<button type="button" data-previous>Previous</button>
-					<button type="button" data-next>Next</button>
+					<button class="button primary is-underline" type="button" data-next>Next</button>
 				</div>
 			</div>
 
 			<!-- Myronja multistep form step 7 wrapper div -->
+						<div class="myronja-form-steps-card" data-step>
+				<div class="img has-hover x md-x lg-x y md-y lg-y">
+					<div class="img-inner dark">
+						<img width="700" height="250" src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/thank_you.png' ); ?>" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 700px) 100vw, 700px">
+					</div>
+				</div>
+				<div class="text myronja-form-step-header">
+					<h5 class="uppercase">Vil du modtage mails med indhold, der hjælper dig til en bedre og sundere hud?</h5>
+					<p>Vi giver dig de bedste hudplejetips fra vores eksperter, lærer dig mere om ingredienser og giver dig besked med spændende events. Du kan selvfølgelig afmelde dig til hver en tid.</p>
+				</div>
+
+				<!-- Myronja sent mail request -->
+				<div class="myronja-mail-request-wrapper">
+					<div class="row">
+						<div class="col medium-6 small-12 large-6">
+							<div class="col-inner">
+								<input type="radio" name="send-mail" id="yes" value="yes" class="myronja-radio" checked>
+								<label for="yes" class="myronja-label">JA TAK!</label>
+							</div>
+						</div>
+						<div class="col medium-6 small-12 large-6">
+							<div class="col-inner">
+								<input type="radio" name="send-mail" id="no" value="no" class="myronja-radio">
+								<label for="no" class="myronja-label">NEJ</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="myronja-form-steps-card__footer-buttons">
+					<button type="button" data-previous>Previous</button>
+					<button class="button primary is-underline" type="button" data-next>Next</button>
+				</div>
+			</div>
+
+			<!-- Myronja multistep form step 8 wrapper div -->
 			<div class="myronja-form-steps-card" data-step>
 				<div class="img has-hover x md-x lg-x y md-y lg-y">
 					<div class="img-inner dark">
@@ -375,11 +411,15 @@ function myronja_personal_shopper_form_cb() {
 					<p>Vi sætter stor pris på den tillid som du viser os og for at betro os med opgaven. Er du tilfreds med dine besvarelser kan du trykke godkend.</p>
 				</div>
 
-				<div class="myronja-form-steps-card__footer-buttons">
+				<div class="myronja-form-steps-card__footer-buttons myronja-form-steps-card__footer-buttons--submit">
 					<button type="button" data-previous>Previous</button>
-					<button type="submit" name="personal-shopper-submit" id="personal-shopper-submit">Approve</button>
+					<button class="button primary is-underline" type="submit" name="personal-shopper-submit" id="personal-shopper-submit">Approve ⟶</button>
+				</div>
+				<div class="myronja-form-steps__error-message">
+					<p></p>
 				</div>
 			</div>
+
 		</form>
 	</section>
 
@@ -398,6 +438,7 @@ add_shortcode( 'myronja_personal_shopper_form', 'myronja_personal_shopper_form_c
 function personal_shopper_create_post_params() {
 	$arr['ajaxUrl']              = admin_url( 'admin-ajax.php' );
 	$arr['personalShopperNonce'] = wp_create_nonce( 'flatsome_child_personal_shopper_nonce' );
+	$arr['myAccountUrl']         = get_permalink( wc_get_page_id( 'myaccount' ) );
 
 	return $arr;
 }

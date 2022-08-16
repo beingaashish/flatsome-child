@@ -69,7 +69,8 @@ const personalShopperSearch = (
             <h2>Search Results</h2>
             <ul class="myronja-search-results__list">
               ${products.map(product => {
-                if ( product.myronjaProductStockStatus == 'true' ) {
+
+                if (product.myronjaProductStockStatus) {
                   return (
                     `<li class="myronja-search-results__list-item" id="product-item-${product.id}">
                           <figure class="myronja-search-results__product-image"><img src="${product.myronjaProductThumbnailSrc[0]}"></figure>
@@ -90,6 +91,7 @@ const personalShopperSearch = (
                       </li>`
                   );
                 }
+
             }).join('')}
             </ul>`;
 

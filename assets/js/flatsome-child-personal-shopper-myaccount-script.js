@@ -2,7 +2,7 @@ const toggleAnswerField = (
   function () {
     const DOMStrings = {
       toggle: document.querySelector( '.personal-shop-user-answers__toggle' ),
-      answerWrap: document.querySelector( '.personal-shop-user-answers' )
+      answerWrap: document.querySelector( '.personal-shop-user-answers' ),
     }
 
     function setUpEvents () {
@@ -149,6 +149,7 @@ const personalShopProductFormSubmission = (
 
     const DOMStrings = {
       personalMyAccountForm: document.querySelector( '.personal-shop-wrapper .personal-shop_cart-form' ),
+      personalMyAccountSubmitBtn: document.querySelector( '.personal-shop-wrapper .personal-shop_cart-form .personal-shop_form-submit-btn' ),
     }
 
     function setUpEvents () {
@@ -177,21 +178,19 @@ const personalShopProductFormSubmission = (
         formFields: formDataObj,
       };
 
+
       if (productIdArr != 'undefined' && productIdArr.length != 0 ) {
+        DOMStrings.personalMyAccountSubmitBtn.disabled = true;
+        DOMStrings.personalMyAccountSubmitBtn.style.pointerEvents = 'none';
+
         $.post(ajaxUrl, data, function (data) {
-
           $(document.body).trigger('wc_fragment_refresh'); // Refresh cart fragments
+        }).done(function () {
+          $(".cart-item .off-canvas-toggle").trigger("click");
+          DOMStrings.personalMyAccountSubmitBtn.disabled = false;
+          DOMStrings.personalMyAccountSubmitBtn.style.pointerEvents = 'initial';
+        }).fail(function () {
 
-          console.log('ajax-response', data);
-          // let fragments = data.fragments;
-
-          // if (fragments) {
-
-          //   $.each(fragments, function (key, value) {
-          //     $(key).replaceWith(value);
-          //   });
-
-          // }
         });
       } else {
         // Message to display.

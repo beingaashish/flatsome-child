@@ -373,7 +373,8 @@ input[type=checkbox].myronja-checkbox + label {
 .myronja-hudtilstand-wrapper .col-inner,
 .myronja-product-type-wrapper .col-inner,
 .myronja-product-ingredients-wrapper .col-inner,
-.myronja-price-range-wrapper .col-inner {
+.myronja-price-range-wrapper .col-inner,
+.myronja-mail-request-wrapper .col-inner {
 	position: relative;
 	left: 33.33%;
 }
@@ -390,6 +391,15 @@ input[type=checkbox].myronja-checkbox + label {
 
 .myronja-form-steps-card.active {
 	display: block;
+}
+
+.myronja-form-steps-card__footer-buttons {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: space-evenly;
+	-ms-flex-pack: space-evenly;
+	justify-content: space-evenly;
 }
 
 /* Personal Shopper Myaccount. */
