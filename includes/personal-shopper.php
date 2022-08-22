@@ -37,9 +37,7 @@ function myronja_personal_shopper_button_cb( $atts ) {
 		?>
 	<a href="
 		<?php
-		echo esc_url(
-			get_bloginfo( 'url' ) . '/' . $redirect_to
-		);
+		echo esc_url(get_bloginfo( 'url' ) . '/' . $redirect_to);
 		?>
 		"
 		class="<?php echo 'underline' === $btn_type ? 'button primary is-underline' : 'button success is-outline'; ?>">
