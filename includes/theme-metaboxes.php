@@ -264,6 +264,10 @@ function personal_shopper_display_metabox( $post ) {
  */
 function flatsome_child_personal_shop_meta( $post_id ) {
 
+	if ( ! function_exists( 'get_current_screen' ) ) {
+		require_once ABSPATH . '/wp-admin/includes/screen.php';
+	}
+
 	$current_screen = get_current_screen();
 
 	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'personal_shop' === $current_screen->post_type ) {
@@ -392,6 +396,11 @@ function personal_shopper_display_admin_comments_metabox( $post ) {
  * @return void
  */
 function personal_shopper_admin_comments_metabox( $post_id ) {
+
+	if ( ! function_exists( 'get_current_screen' ) ) {
+		require_once ABSPATH . '/wp-admin/includes/screen.php';
+	}
+
 	$current_screen = get_current_screen();
 
 	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'personal_shop' === $current_screen->post_type ) {

@@ -76,6 +76,10 @@ add_action( 'wp_enqueue_scripts', 'flatsome_child_scripts' );
  * Enqueue scripts and styles in admin pages.
  */
 function flatsome_child_admin_scripts() {
+	if ( ! function_exists( 'get_current_screen' ) ) {
+		require_once ABSPATH . '/wp-admin/includes/screen.php';
+	}
+
 	$current_screen = get_current_screen();
 	$suffix         = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
@@ -88,3 +92,56 @@ function flatsome_child_admin_scripts() {
 	}
 }
 add_action( 'admin_enqueue_scripts', 'flatsome_child_admin_scripts' );
+
+/**
+ * Displays message for minimum order amount for free shipping.
+ *
+ * @return void
+ */
+function myronja_minimum_order_for_free_shipping() {
+	global $woocommerce;
+
+	$user_cart_subtotals            = floatval( $woocommerce->cart->subtotal );
+	$minimum_order_amount_threshold = 399.00;
+
+	if ( $user_cart_subtotals && $user_cart_subtotals > 0 && $user_cart_subtotals < $minimum_order_amount_threshold ) :
+		$amount_require_for_freeshipping = floatval( $minimum_order_amount_threshold - $user_cart_subtotals );
+		?>
+	<div class="myronja-mini-cart-freeshipping-message">
+		<p>Du har <?php echo esc_html( sprintf( '%.2f', $amount_require_for_freeshipping ) ); ?> kr tilbage til gratis levering.</p>
+	</div>
+		<?php
+	endif;
+}
+add_action( 'woocommerce_widget_shopping_cart_before_buttons', 'myronja_minimum_order_for_free_shipping' );
+
+/**
+ * Displays shipping information in checkout form.
+ *
+ * @return void
+ */
+function myronja_shipping_detalils_display() {
+	?>
+	<div class="myronja-shipping_details-wrapper">
+		<h3><?php esc_html_e( 'Leveringsmetode', 'woocommerce' ); ?></h3>
+		<label><?php esc_html_e( 'Hjemmelevering', 'woocommerce' ); ?></label>
+		<div class="myronja-shipping-info">
+			<div class="myronja-shipping-info__header">
+				<div class="myronja-shipping-info__header-left">
+					<img src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/ups.svg' ); ?>" alt="Ups shipping logo">
+					<div class="myronja-shipping-price"><?php esc_html_e( '49 kr', 'woocommerce' ); ?></div>
+				</div>
+				<div class="myronja-shipping-info__header-right">
+					<div class="myronja-shipping-info__delivery-info"><?php esc_html_e( 'Afsendes mandag', 'woocommerce' ); ?></div>
+				</div>
+			</div>
+
+			<div class="myronja-shipping-info__content">
+				<h5><?php esc_html_e( 'UPS', 'woocommerce' ); ?></h5>
+				<p><?php esc_html_e( 'Bestil inden kl. 14:00 , så afsender vi pakken samme dag (man-tors). Bestil fredag og din pakke leveres mandag.', ' woocommerce' ); ?></p>
+			</div>
+		</div>
+	</div>
+	<?php
+}
+add_action( 'woocommerce_before_order_notes', 'myronja_shipping_detalils_display' );

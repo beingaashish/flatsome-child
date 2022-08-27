@@ -300,3 +300,54 @@ input[type=checkbox].myronja-checkbox + label {
     background-color: #CCC;
     border-color: #999;
 }
+
+/* Header mini cart freeshipping info box. */
+.myronja-mini-cart-freeshipping-message {
+    background: #fff;
+    padding: 10px;
+    margin: 10px 0;
+
+    p {
+        margin-bottom: 0;
+        line-height: 1.3;
+        text-align: center;
+        font-size: 16px;
+    }
+}
+
+/* Shipping description styles. */
+.myronja-shipping-info {
+    border: 1px solid #ddd;
+    padding: 15px;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    &__header-left {
+        display: flex;
+        font-size: 16px;
+        align-items: center;
+        font-weight: 600;
+
+        img {
+            display: block;
+            width: 35px;
+            height: auto;
+            margin-right: 10px;
+        }
+    }
+
+    &__delivery-info {
+        background-color: #AAA;
+        padding: 3px 10px;
+        color: #fff;
+    }
+}
+
+.myronja-shipping_details-wrapper {
+    margin-bottom: 20px;
+}

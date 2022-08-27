@@ -301,6 +301,10 @@ add_action( 'woocommerce_single_product_summary', 'flatsome_child_product_effect
 function personal_shopper_recommend_products_params() {
 	global $post;
 
+	if ( !function_exists( 'get_current_screen' ) ) {
+		require_once ABSPATH . '/wp-admin/includes/screen.php';
+ }
+
 	$current_screen = get_current_screen();
 	$arr            = array();
 

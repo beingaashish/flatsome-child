@@ -306,6 +306,67 @@ input[type=checkbox].myronja-checkbox + label {
 	border-color: #999;
 }
 
+/* Header mini cart freeshipping info box. */
+.myronja-mini-cart-freeshipping-message {
+	background: #fff;
+	padding: 10px;
+	margin: 10px 0;
+}
+
+.myronja-mini-cart-freeshipping-message p {
+	margin-bottom: 0;
+	line-height: 1.3;
+	text-align: center;
+	font-size: 16px;
+}
+
+/* Shipping description styles. */
+.myronja-shipping-info {
+	border: 1px solid #ddd;
+	padding: 15px;
+}
+
+.myronja-shipping-info__header {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: justify;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.myronja-shipping-info__header-left {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	font-size: 16px;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	font-weight: 600;
+}
+
+.myronja-shipping-info__header-left img {
+	display: block;
+	width: 35px;
+	height: auto;
+	margin-right: 10px;
+}
+
+.myronja-shipping-info__delivery-info {
+	background-color: #AAA;
+	padding: 3px 10px;
+	color: #fff;
+}
+
+.myronja-shipping_details-wrapper {
+	margin-bottom: 20px;
+}
+
 .flatsome-child-active-cat-filter {
 	border: solid 1px #aaaaaa;
 	background-color: #eee;
