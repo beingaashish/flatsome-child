@@ -662,7 +662,13 @@ function personal_shopper_create_post() {
 					include wp_normalize_path( dirname( __FILE__ ) . '/personalshop-email-template.php' );
 					$content = ob_get_clean();
 
+					$content_type = function() {
+						return 'text/html';
+					};
+					add_filter( 'wp_mail_content_type', $content_type );
+
 					wp_mail( $email, $title, $content );
+					remove_filter( 'wp_mail_content_type', $content_type );
 				}
 			} catch ( Exception $ex ) {
 				echo wp_json_encode(
