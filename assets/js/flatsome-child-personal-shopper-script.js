@@ -41,6 +41,7 @@ const personalShopperForm = (
 			formDataObj.ingredientsPreference = formData.get( 'myronja-product-user-ingredients' );
 			formDataObj.userAwareness         = formData.get( 'myronja-product-user-awareness' );
 			formDataObj.pricerange            = formData.get( 'pricerange' );
+			formDataObj.sendMail              = formData.get( 'send-mail' );
 
 			DOMStrings.personalShopperSubmit.disabled = true;
 			DOMStrings.personalShopperSubmit.style.pointerEvents = 'none';

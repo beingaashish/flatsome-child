@@ -37,7 +37,7 @@ function myronja_personal_shopper_button_cb( $atts ) {
 		?>
 	<a href="
 		<?php
-		echo esc_url(get_bloginfo( 'url' ) . '/' . $redirect_to);
+		echo esc_url( get_bloginfo( 'url' ) . '/' . $redirect_to );
 		?>
 		"
 		class="<?php echo 'underline' === $btn_type ? 'button primary is-underline' : 'button success is-outline'; ?>">
@@ -378,13 +378,13 @@ function myronja_personal_shopper_form_cb() {
 					<div class="row">
 						<div class="col medium-6 small-12 large-6">
 							<div class="col-inner">
-								<input type="radio" name="send-mail" id="yes" value="yes" class="myronja-radio" checked>
+								<input type="radio" name="send-mail" id="yes" value="1" class="myronja-radio" checked>
 								<label for="yes" class="myronja-label">JA TAK!</label>
 							</div>
 						</div>
 						<div class="col medium-6 small-12 large-6">
 							<div class="col-inner">
-								<input type="radio" name="send-mail" id="no" value="no" class="myronja-radio">
+								<input type="radio" name="send-mail" id="no" value="0" class="myronja-radio">
 								<label for="no" class="myronja-label">NEJ</label>
 							</div>
 						</div>
@@ -469,186 +469,209 @@ function personal_shopper_create_post() {
 		// Get inserted post id and update personal shopper post meta.
 		if ( $post_id ) {
 
-			$price_range_arr  = array(
-				'low'  => '300-500 kr',
-				'mid'  => '500-1000 kr',
-				'high' => '1000 + kr',
-			);
-			$current_user     = wp_get_current_user();
-			$first_name       = $current_user->user_firstname;
-			$last_name        = $current_user->user_lastname;
-			$user_name        = $first_name . ' ' . $last_name;
-			$order_no         = get_current_user_id() . '-' . $post_id;
-			$order_date       = get_the_date( 'l F j, Y', $post_id );
-			$price_range      = '';
-			$hudtilstand      = '';
-			$hudtilstand_arr  = $form_fields_data['hudtilstand'];
-			$hudtilstand_cats = array();
-			$hudtype          = '';
-			$hudtype_arr      = $form_fields_data['hudtype'];
-			$hudtype_cats     = array();
-			$produkttype      = '';
-			$produkttype_arr  = $form_fields_data['produkttype'];
-			$produkttype_cats = array();
-			$ingredients      = '';
-			$ingredients_arr  = $form_fields_data['ingredients'];
+			try {
+				$price_range_arr  = array(
+					'low'  => '300-500 kr',
+					'mid'  => '500-1000 kr',
+					'high' => '1000 + kr',
+				);
+				$current_user     = wp_get_current_user();
+				$first_name       = $current_user->user_firstname;
+				$last_name        = $current_user->user_lastname;
+				$user_name        = $first_name . ' ' . $last_name;
+				$order_no         = get_current_user_id() . '-' . $post_id;
+				$order_date       = get_the_date( 'l F j, Y', $post_id );
+				$price_range      = '';
+				$hudtilstand      = '';
+				$hudtilstand_arr  = $form_fields_data['hudtilstand'];
+				$hudtilstand_cats = array();
+				$hudtype          = '';
+				$hudtype_arr      = $form_fields_data['hudtype'];
+				$hudtype_cats     = array();
+				$produkttype      = '';
+				$produkttype_arr  = $form_fields_data['produkttype'];
+				$produkttype_cats = array();
+				$ingredients      = '';
+				$ingredients_arr  = $form_fields_data['ingredients'];
 
-			if ( $form_fields_data['pricerange'] ) {
-				$price_range = $price_range_arr[ $form_fields_data['pricerange'] ] . '';
-			}
-
-			if ( ! empty( $hudtilstand_arr ) ) {
-				foreach ( $hudtilstand_arr as $key => $value ) {
-					$term = get_term_by( 'id', $value, 'product_cat' );
-					if ( $term ) {
-						array_push( $hudtilstand_cats, $term->name );
-					}
+				if ( $form_fields_data['pricerange'] ) {
+					$price_range = $price_range_arr[ $form_fields_data['pricerange'] ] . '';
 				}
-				$hudtilstand = implode( ', ', $hudtilstand_cats );
 
-				// Add Hudtilstand ids in meta for better search.
+				if ( ! empty( $hudtilstand_arr ) ) {
+					foreach ( $hudtilstand_arr as $key => $value ) {
+						$term = get_term_by( 'id', $value, 'product_cat' );
+						if ( $term ) {
+							array_push( $hudtilstand_cats, $term->name );
+						}
+					}
+					$hudtilstand = implode( ', ', $hudtilstand_cats );
+
+					// Add Hudtilstand ids in meta for better search.
+					update_post_meta(
+						$post_id,
+						'_personal_shop_hudtilstand_ids',
+						$hudtilstand_arr
+					);
+				}
+
+				if ( ! empty( $hudtype_arr ) ) {
+					foreach ( $hudtype_arr as $key => $value ) {
+						$term = get_term_by( 'id', $value, 'product_cat' );
+						if ( $term ) {
+							array_push( $hudtype_cats, $term->name );
+						}
+					}
+					$hudtype = implode( ', ', $hudtype_cats );
+
+					// Add Hudtype ids in meta for better search.
+					update_post_meta(
+						$post_id,
+						'_personal_shop_hudtype_ids',
+						$hudtype_arr
+					);
+				}
+
+				if ( ! empty( $produkttype_arr ) ) {
+					foreach ( $produkttype_arr as $key => $value ) {
+						$term = get_term_by( 'id', $value, 'product_cat' );
+						if ( $term ) {
+							array_push( $produkttype_cats, $term->name );
+						}
+					}
+					$produkttype = implode( ', ', $produkttype_cats );
+
+					// Add Produkttype ids in meta for better search.
+					update_post_meta(
+						$post_id,
+						'_personal_shop_produkttype_ids',
+						$produkttype_arr
+					);
+				}
+
+				if ( ! empty( $ingredients_arr ) ) {
+					$ingredients = implode( ', ', $ingredients_arr );
+				}
+
+				// Update personal shop order number.
 				update_post_meta(
 					$post_id,
-					'_personal_shop_hudtilstand_ids',
-					$hudtilstand_arr
+					'_personal_shop_order_number',
+					$order_no
 				);
-			}
 
-			if ( ! empty( $hudtype_arr ) ) {
-				foreach ( $hudtype_arr as $key => $value ) {
-					$term = get_term_by( 'id', $value, 'product_cat' );
-					if ( $term ) {
-						array_push( $hudtype_cats, $term->name );
-					}
-				}
-				$hudtype = implode( ', ', $hudtype_cats );
-
-				// Add Hudtype ids in meta for better search.
+				// Update personal shop order date.
 				update_post_meta(
 					$post_id,
-					'_personal_shop_hudtype_ids',
-					$hudtype_arr
+					'_personal_shop_order_date',
+					$order_date
 				);
-			}
 
-			if ( ! empty( $produkttype_arr ) ) {
-				foreach ( $produkttype_arr as $key => $value ) {
-					$term = get_term_by( 'id', $value, 'product_cat' );
-					if ( $term ) {
-						array_push( $produkttype_cats, $term->name );
-					}
-				}
-				$produkttype = implode( ', ', $produkttype_cats );
-
-				// Add Produkttype ids in meta for better search.
+				// Update personal shop user name.
 				update_post_meta(
 					$post_id,
-					'_personal_shop_produkttype_ids',
-					$produkttype_arr
+					'_personal_shop_user_name',
+					$user_name
+				);
+
+				// Update personal shop order status.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_order_status',
+					__( 'received', 'woocommerce' )
+				);
+
+				// Update price range.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_price_range',
+					$price_range
+				);
+
+				// Update hudtilstand.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_hudtilstand',
+					$hudtilstand
+				);
+
+				// Update user goals.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_user_goal',
+					$form_fields_data['userGoals']
+				);
+
+				// Update hudtype.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_hudtype',
+					$hudtype
+				);
+
+				// Skin experience.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_skin_experience',
+					$form_fields_data['userExpierence']
+				);
+
+				// Update produkttype.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_produkt_type',
+					$produkttype
+				);
+
+				// Update produkt type recommendation.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_produkt_recommendation',
+					$form_fields_data['userRecommendation']
+				);
+
+				// Update Ingredients.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_ingredients',
+					$ingredients
+				);
+
+				// Update Ingredients preference.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_user_ingredients',
+					$form_fields_data['ingredientsPreference']
+				);
+
+				// Update User awareness.
+				update_post_meta(
+					$post_id,
+					'_personal_shop_user_awareness',
+					$form_fields_data['userAwareness']
+				);
+
+				// Send email to user.
+				$email = $current_user->user_email;
+
+				if ( '1' == $form_fields_data['sendMail'] && $email ) {
+					$email_user_name = $user_name ? $user_name : $current_user->display_name;
+					$title           = 'This is the title';
+
+					ob_start();
+					include wp_normalize_path( dirname( __FILE__ ) . '/personalshop-email-template.php' );
+					$content = ob_get_clean();
+
+					wp_mail( $email, $title, $content );
+				}
+			} catch ( Exception $ex ) {
+				echo wp_json_encode(
+					array(
+						'success' => false,
+						'reason'  => $ex->getMessage(),
+					)
 				);
 			}
-
-			if ( ! empty( $ingredients_arr ) ) {
-				$ingredients = implode( ', ', $ingredients_arr );
-			}
-
-			// Update personal shop order number.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_order_number',
-				$order_no
-			);
-
-			// Update personal shop order date.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_order_date',
-				$order_date
-			);
-
-			// Update personal shop user name.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_user_name',
-				$user_name
-			);
-
-			// Update personal shop order status.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_order_status',
-				__( 'received', 'woocommerce' )
-			);
-
-			// Update price range.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_price_range',
-				$price_range
-			);
-
-			// Update hudtilstand.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_hudtilstand',
-				$hudtilstand
-			);
-
-			// Update user goals.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_user_goal',
-				$form_fields_data['userGoals']
-			);
-
-			// Update hudtype.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_hudtype',
-				$hudtype
-			);
-
-			// Skin experience.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_skin_experience',
-				$form_fields_data['userExpierence']
-			);
-
-			// Update produkttype.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_produkt_type',
-				$produkttype
-			);
-
-			// Update produkt type recommendation.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_produkt_recommendation',
-				$form_fields_data['userRecommendation']
-			);
-
-			// Update Ingredients.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_ingredients',
-				$ingredients
-			);
-
-			// Update Ingredients preference.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_user_ingredients',
-				$form_fields_data['ingredientsPreference']
-			);
-
-			// Update User awareness.
-			update_post_meta(
-				$post_id,
-				'_personal_shop_user_awareness',
-				$form_fields_data['userAwareness']
-			);
 		}
 	}
 }
@@ -833,7 +856,7 @@ add_filter( 'personal_shopper_myaccount_params', 'personal_shopper_myaccount_par
  *
  * @return void
  */
-function personal_shopper_myaccount () {
+function personal_shopper_myaccount() {
 	if ( ! is_user_logged_in() || ! class_exists( 'WooCommerce' ) ) {
 		return;
 	}
