@@ -206,6 +206,9 @@ add_action( 'woocommerce_single_product_summary', 'flatsome_child_product_descri
  * @return void
  */
 function flatsome_child_product_effects() {
+	global $post, $product;
+
+	$product_id = $product->get_id() ? $product->get_id() : $post->ID;
 	?>
 	<section class="flatsome-child-product-effect">
 		<div class="container section-title-container">
@@ -224,12 +227,7 @@ function flatsome_child_product_effects() {
 				)
 			);
 
-			$selected_product_effect_terms = get_terms(
-				array(
-					'taxonomy'   => 'product_effect',
-					'hide_empty' => true,
-				)
-			);
+			$selected_product_effect_terms = get_the_terms( $product_id, 'product_effect' );
 
 			foreach ( $all_product_effect_terms as $term_index => $term_obj ) {
 				?>
@@ -265,12 +263,7 @@ function flatsome_child_product_effects() {
 				)
 			);
 
-			$selected_sustainability_terms = get_terms(
-				array(
-					'taxonomy'   => 'product_sustainability',
-					'hide_empty' => true,
-				)
-			);
+			$selected_sustainability_terms = get_the_terms( $product_id, 'product_sustainability' );
 
 			foreach ( $all_sustainability_terms as $term_index => $term_obj ) {
 				?>
@@ -301,9 +294,9 @@ add_action( 'woocommerce_single_product_summary', 'flatsome_child_product_effect
 function personal_shopper_recommend_products_params() {
 	global $post;
 
-	if ( !function_exists( 'get_current_screen' ) ) {
+	if ( ! function_exists( 'get_current_screen' ) ) {
 		require_once ABSPATH . '/wp-admin/includes/screen.php';
- }
+	}
 
 	$current_screen = get_current_screen();
 	$arr            = array();

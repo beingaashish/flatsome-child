@@ -153,6 +153,6 @@ add_action( 'woocommerce_before_order_notes', 'myronja_shipping_detalils_display
  * @return void
  */
 function myronja_update_info_after_order_placed ( $order_id ) {
-	error_log( print_r( 'After Order Placed', true ) );
+	error_log( print_r( $order_id, true ) );
 }
 add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );

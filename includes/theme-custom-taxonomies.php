@@ -46,6 +46,8 @@ add_action( 'init', 'flatsome_child_product_effect_taxonomy' );
  */
 function flatsome_child_product_sustainability_taxonomy() {
 
+	flush_rewrite_rules();
+
 	$labels = array(
 		'name'          => __( 'Bæredygtighed', 'woocommerce' ),
 		'singular_name' => __( 'Bæredygtighed', 'woocommerce' ),
