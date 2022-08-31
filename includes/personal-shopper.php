@@ -182,7 +182,7 @@ function myronja_personal_shopper_form_cb() {
 			<div class="myronja-form-steps-card" data-step>
 				<div class="img has-hover x md-x lg-x y md-y lg-y">
 					<div class="img-inner dark">
-						<img width="700" height="250" src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/ingredients.png' ); ?>" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 700px) 100vw, 700px">
+						<img width="700" height="250" src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/skinroutine.png' ); ?>" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 700px) 100vw, 700px">
 					</div>
 				</div>
 				<div class="text myronja-form-step-header">
@@ -234,7 +234,7 @@ function myronja_personal_shopper_form_cb() {
 			<div class="myronja-form-steps-card" data-step>
 				<div class="img has-hover x md-x lg-x y md-y lg-y">
 					<div class="img-inner dark">
-						<img width="700" height="250" src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/skinroutine.png' ); ?>" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 700px) 100vw, 700px">
+						<img width="700" height="250" src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/ingredients.png' ); ?>" class="attachment-large size-large" alt="" loading="lazy" sizes="(max-width: 700px) 100vw, 700px">
 					</div>
 				</div>
 				<div class="text myronja-form-step-header">
