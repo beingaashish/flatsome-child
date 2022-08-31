@@ -229,6 +229,10 @@ function flatsome_child_product_effects() {
 
 			$selected_product_effect_terms = get_the_terms( $product_id, 'product_effect' );
 
+			if ( false == $selected_product_effect_terms ) {
+				$selected_product_effect_terms = array();
+			}
+
 			foreach ( $all_product_effect_terms as $term_index => $term_obj ) {
 				?>
 			<div class="col medium-3 small-6 large-3">
@@ -264,6 +268,10 @@ function flatsome_child_product_effects() {
 			);
 
 			$selected_sustainability_terms = get_the_terms( $product_id, 'product_sustainability' );
+
+			if ( false == $selected_sustainability_terms ) {
+				$selected_sustainability_terms = array();
+			}
 
 			foreach ( $all_sustainability_terms as $term_index => $term_obj ) {
 				?>
