@@ -58,12 +58,13 @@ add_action( 'add_meta_boxes', 'flatsome_child_add_meta_box' );
  */
 function flatsome_child_display_metabox( $post ) {
 
-	$post_id                     = $post->ID;
-	$myronja_product_serial_no   = (int) get_post_meta( $post_id, '_myronja_product_serial_no', true );
-	$myronja_product_quantity    = get_post_meta( $post_id, '_myronja_product_quantity', true );
-	$myronja_product_ingredients = get_post_meta( $post_id, '_myronja_product_ingredients', true ); // INGREDIENSER.
-	$myronja_product_application = get_post_meta( $post_id, '_myronja_product_application', true ); // ANVENDELSE.
-	$myronja_product_evaluation  = get_post_meta( $post_id, '_myronja_product_evaluation', true ); // VORES VURDERING.
+	$post_id                        = $post->ID;
+	$myronja_product_serial_no      = (int) get_post_meta( $post_id, '_myronja_product_serial_no', true );
+	$myronja_product_ext_product_id = get_post_meta( $post_id, '_myronja_product_ext_product_id', true );
+	$myronja_product_quantity       = get_post_meta( $post_id, '_myronja_product_quantity', true );
+	$myronja_product_ingredients    = get_post_meta( $post_id, '_myronja_product_ingredients', true ); // INGREDIENSER.
+	$myronja_product_application    = get_post_meta( $post_id, '_myronja_product_application', true ); // ANVENDELSE.
+	$myronja_product_evaluation     = get_post_meta( $post_id, '_myronja_product_evaluation', true ); // VORES VURDERING.
 
 	wp_nonce_field( basename( __FILE__ ), 'flatsome_child_meta_box_nonce' );
 	?>
@@ -72,6 +73,10 @@ function flatsome_child_display_metabox( $post ) {
 		<p class="form-field">
 			<label for="_myronja_product_serial_no">Product's serial number</label>
 			<input type="number" id="_myronja_product_serial_no" name="_myronja_product_serial_no" class="short" value="<?php echo esc_html( $myronja_product_serial_no ); ?>">
+		</p>
+		<p class="form-field">
+			<label for="_myronja_product_ext_product_id">Product's ext Id</label>
+			<input type="text" id="_myronja_product_ext_product_id" name="_myronja_product_ext_product_id" class="short" value="<?php echo esc_html( $myronja_product_ext_product_id ); ?>">
 		</p>
 		<p class="form-field">
 			<label for="_myronja_product_quantity">Product's amount</label>
@@ -124,6 +129,16 @@ function flatsome_child_save_meta_box( $post_id ) {
 			$post_id,
 			'_myronja_product_serial_no',
 			sanitize_text_field( wp_unslash( $_POST['_myronja_product_serial_no'] ) ),
+		);
+	}
+
+	// Product ext id.
+	if ( array_key_exists( '_myronja_product_ext_product_id', $_POST ) ) {
+
+		update_post_meta(
+			$post_id,
+			'_myronja_product_ext_product_id',
+			sanitize_text_field( wp_unslash( $_POST['_myronja_product_ext_product_id'] ) ),
 		);
 	}
 

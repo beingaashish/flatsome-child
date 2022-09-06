@@ -152,7 +152,139 @@ add_action( 'woocommerce_before_order_notes', 'myronja_shipping_detalils_display
  *
  * @return void
  */
-function myronja_update_info_after_order_placed ( $order_id ) {
-	error_log( print_r( $order_id, true ) );
+function myronja_update_info_after_order_placed( $order_id ) {
+	$order                  = wc_get_order( $order_id );
+	$endpoint               = 'https://myronja.nu:8888/api/myronja/v1/external-order';
+	$api_key                = 'myronja-wordpress';
+	$api_secret             = 'azQfnPjKhWtAJZTj';
+	$shop_country           = 'Danmark';
+	$total_coupons_discount = array();
+	$total_discount         = $order->get_total_discount() ? $order->get_total_discount() : 0;
+
+	// For getting each coupon discounts.
+	if ( count( $order->get_coupon_codes() ) > 0 ) {
+		$coupon_codes = implode( ',', $order->get_coupon_codes() );
+
+		foreach ( $order->get_coupon_codes() as $key => $coupon_code ) {
+
+			// Retrieving the coupon ID.
+			$coupon_post_obj = get_page_by_title( $coupon_code, OBJECT, 'shop_coupon' );
+			$coupon_id       = $coupon_post_obj->ID;
+
+			// Get an instance of WC_Coupon object in an array(necessary to use WC_Coupon methods).
+			$coupon = new WC_Coupon( $coupon_id );
+
+			if ( $coupon->get_discount_type() === 'percent' ) {
+				$order_sub_total_before_discount = floatval( $order->get_subtotal() );
+				$discount_percentage             = floatval( $coupon->get_amount() );
+				$coupon_amount                   = floatval( ( $discount_percentage / 100 ) * $order_sub_total_before_discount );
+			} else {
+				$coupon_amount = floatval( $coupon->get_amount() );
+			}
+
+			array_push( $total_coupons_discount, $coupon_amount );
+		}
+	}
+
+	// Shipping info.
+	$order_data = array(
+		'orderId'             => $order_id,
+		'shippingFirstName'   => $order->get_shipping_first_name(),
+		'shippingLastName'    => $order->get_shipping_last_name(),
+		'shippingEmail'       => $order->get_billing_email(),
+		'shippingAddress'     => $order->get_shipping_address_1(),
+		'shippingAddress2'    => $order->get_shipping_address_2(),
+		'shippingCity'        => $order->get_shipping_city(),
+		'shippingPostalCode'  => $order->get_shipping_postcode(),
+		'shippingPhoneNumber' => $order->get_billing_phone(),
+		'shippingCountry'     => $order->get_shipping_country(),
+		'shippingCountryCode' => 'DK',
+		'billingFirstName'    => $order->get_billing_first_name(),
+		'billingLastName'     => $order->get_billing_last_name(),
+		'billingEmail'        => $order->get_billing_email(),
+		'billingAddress'      => $order->get_billing_address_1(),
+		'billingAddress2'     => $order->get_billing_address_2(),
+		'billingCity'         => $order->get_billing_city(),
+		'billingPostalCode'   => $order->get_billing_postcode(),
+		'billingPhoneNumber'  => $order->get_billing_phone(),
+		'billingCountry'      => $order->get_billing_country(),
+		'billingCountryCode'  => 'DK',
+		'couponCode'          => isset( $coupon_codes ) ? $coupon_codes : '',
+		'voucherCode'         => null,
+		'discountAmount'      => $total_discount,
+		'voucherDiscount'     => $total_coupons_discount && ! empty( $total_coupons_discount ) ? array_sum( $total_coupons_discount ) : 0,
+		'giftCardDiscount'    => 0,
+		'subTotal'            => $order->get_subtotal(),
+		'orderTotal'          => $order->get_total(),
+		'shippingPrice'       => $order->get_shipping_total(),
+		'currency'            => $order->get_currency(),
+		'locale'              => 'dk',
+		'paymentType'         => $order->get_payment_method(),
+		'paymentId'           => $order->get_payment_method(),
+	);
+
+	$cart_items = array();
+
+	foreach ( $order->get_items() as $item_id => $item ) {
+
+		$product_id  = $item->get_product_id();
+		$product_obj = wc_get_product( $product_id );
+
+		$product_detail_arr = array();
+
+		// Code for retrieving product brand.
+		$brand_cat  = get_term_by( 'slug', 'brands', 'product_cat' );
+		$taxonomies = array(
+			'taxonomy' => 'product_cat',
+		);
+		$args       = array(
+			'child_of'   => $brand_cat->term_id,
+			'hide_empty' => true,
+			'object_ids' => $product_id,
+		);
+		$brand_obj  = get_terms( $taxonomies, $args );
+
+		// Code for retrieving image thumbnail.
+		$image_src = wp_get_original_image_url( get_post_thumbnail_id( $product_id ) );
+
+		$product_detail_arr['productWpId']         = $product_id;
+		$product_detail_arr['productName']         = $item->get_name();
+		$product_detail_arr['serialNo']            = get_post_meta( $product_id, '_myronja_product_serial_no', true );
+		$product_detail_arr['productId']           = get_post_meta( $product_id, '_myronja_product_ext_product_id', true );
+		$product_detail_arr['brand']               = $brand_obj ? $brand_obj[0]->name : '';
+		$product_detail_arr['size']                = get_post_meta( $product_id, '_myronja_product_quantity', true );
+		$product_detail_arr['imageUrl']            = $image_src ? $image_src : '';
+		$product_detail_arr['quantity']            = $item->get_quantity();
+		$product_detail_arr['price']               = $product_obj->get_regular_price();
+		$product_detail_arr['priceAfterDiscount']  = $product_obj->get_sale_price() ? $product_obj->get_sale_price() : 0;
+		$product_detail_arr['fromPersonalShopper'] = false;
+
+		array_push( $cart_items, $product_detail_arr );
+	}
+
+	$data = array(
+		'orderData' => $order_data,
+		'cartItems' => $cart_items,
+		'userId'    => null,
+	);
+
+	$api_args = array(
+		'headers'     => array(
+			'Content-Type' => 'application/json',
+			'apikey'       => 'myronja-wordpress',
+			'apisecret'    => 'azQfnPjKhWtAJZTj',
+			'shopcountry'  => 'Danmark',
+		),
+		'sslverify'   => false,
+		'data_format' => 'body',
+		'body'        => wp_json_encode( $data ),
+	);
+
+	// Send request to external API.
+	$response = wp_remote_post( $endpoint, $api_args );
+
+	error_log( print_r( $api_args, true ) );
+	error_log( print_r( $response, true ) );
+
 }
 add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );
