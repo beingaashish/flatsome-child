@@ -282,9 +282,5 @@ function myronja_update_info_after_order_placed( $order_id ) {
 
 	// Send request to external API.
 	$response = wp_remote_post( $endpoint, $api_args );
-
-	error_log( print_r( $api_args, true ) );
-	error_log( print_r( $response, true ) );
-
 }
-add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );
+// add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );

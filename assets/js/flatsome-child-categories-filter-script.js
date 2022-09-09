@@ -67,7 +67,7 @@ const categoriesFilter = (
             };
 
             $.post( ajaxUrl, data, function ( data ) {
-                let posts = $( data );
+                let posts = $( data );;
 
                 if ( null != posts ) {
 
@@ -89,8 +89,18 @@ const categoriesFilter = (
                     // Trigger event to change quick view style.
                     $( window ).trigger( 'flatsome_child_quick_view_reload' );
 
-                } else {
-                    // Display no products found message.
+                }
+
+                // Display no products found message.
+                if ( posts.length == 0 ) {
+                    const tag = document.createElement('p'),
+                        textMessage = document.createTextNode('No products found, that fall under all categories that you have selected.');
+
+                    tag.classList.add( 'myronja-no-products-found-message' );
+
+                    tag.appendChild(textMessage );
+                    DOMStrings.containerEl.appendChild( tag );
+
                 }
             } );
         }

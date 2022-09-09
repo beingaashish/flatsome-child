@@ -367,9 +367,43 @@ input[type=checkbox].myronja-checkbox + label {
 	margin-bottom: 20px;
 }
 
+.shop-container .products {
+	min-height: 90vh;
+}
+
+.shop-container .products p.myronja-no-products-found-message {
+	position: absolute;
+	top: 5%;
+	left: 50%;
+	text-align: center;
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
+	color: #a59a8c;
+	font-size: 20px;
+}
+
 .flatsome-child-active-cat-filter {
-	border: solid 1px #aaaaaa;
-	background-color: #eee;
+	border: solid 2px #a59a8c;
+	padding-left: 20px;
+	width: 20%;
+	border-radius: 100000px;
+	color: #a59a8c;
+	position: relative;
+}
+
+.flatsome-child-active-cat-filter::after {
+	content: "\2715";
+	font-weight: 900;
+	font-size: 10px;
+	position: absolute;
+	border-radius: 10000000px;
+	right: 10px;
+	background: #a59a8c;
+	color: #fff;
+	padding: 2px 5px;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
 }
 
 .shop-container.processing::after {
