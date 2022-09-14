@@ -188,7 +188,7 @@ function myronja_update_info_after_order_placed( $order_id ) {
 
 	// Shipping info.
 	$order_data = array(
-		'orderId'             => $order_id,
+		'orderNumber'         => (string)$order_id,
 		'shippingFirstName'   => $order->get_shipping_first_name(),
 		'shippingLastName'    => $order->get_shipping_last_name(),
 		'shippingEmail'       => $order->get_billing_email(),
@@ -275,12 +275,120 @@ function myronja_update_info_after_order_placed( $order_id ) {
 			'apisecret'    => 'azQfnPjKhWtAJZTj',
 			'shopcountry'  => 'Danmark',
 		),
-		'sslverify'   => false,
+
 		'data_format' => 'body',
 		'body'        => wp_json_encode( $data ),
 	);
 
 	// Send request to external API.
 	$response = wp_remote_post( $endpoint, $api_args );
+	error_log( print_r( $response, true ) );
 }
-// add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );
+add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );
+
+
+/* Code for running crons that updates order status. */
+
+/**
+ * Adds custom cron interval of two hours.
+ *
+ * @param [type] $schedules
+ * @return void
+ */
+function myronja_wpcron_interval ( $schedules ) {
+
+	// Two hours custom interval for cron.
+	$two_hour = array(
+		'interval' => 300,
+		'display'  => 'Two Hour',
+	);
+
+	$schedules['two_hour'] = $two_hour;
+
+	return $schedules;
+}
+add_filter( 'cron_schedules', 'myronja_wpcron_interval' );
+
+/**
+ * Adds cron event.
+ *
+ * @return void
+ */
+function myronja_wpcron_activation() {
+
+	if ( ! wp_next_scheduled( 'myronja_update_order_status' ) ) {
+		wp_schedule_event( time(), 'two_hour', 'myronja_update_order_status' );
+	}
+
+}
+//add_action( 'wp', 'myronja_wpcron_activation' );
+
+
+/**
+ * Call back of myronja_update_order_status event.
+ *
+ * @return void
+ */
+function myronja_update_order_status_cb () {
+	if ( ! defined( 'DOING_CRON' ) ) {
+		return;
+	}
+
+	error_log( print_r( 'Cron just ran', true ) );
+
+
+	$orders_id_arr = array();
+
+	$orders = wc_get_orders( array( 'numberposts' => -1 ) );
+
+	if ( $orders ) {
+		// Loop through each WC_Order object
+		foreach( $orders as $order ) {
+			if ( $order->get_id() && $order->get_status() === 'processing') {
+				$order_id_str = (string) $order->get_id();
+				array_push( $orders_id_arr, $order_id_str );
+			}
+		}
+	}
+
+	if ( count( $orders_id_arr ) > 0 ) {
+
+			$data = array(
+				'orderNumbers' => $orders_id_arr,
+			);
+
+			error_log( print_r( wp_json_encode( $data ), true ) );
+			$endpoint = 'https://myronja.nu:8888/api/myronja/v1/external-order/order-status';
+
+			$api_args = array(
+				'headers'     => array(
+					'Content-Type' => 'application/json',
+					'apikey'       => 'myronja-wordpress',
+					'apisecret'    => 'azQfnPjKhWtAJZTj',
+					'shopcountry'  => 'Danmark',
+				),
+
+				'data_format' => 'body',
+				'body'        => wp_json_encode( $data ),
+			);
+
+			// Send request to external API.
+			$response = wp_remote_post( $endpoint, $api_args );
+			$response_status = wp_remote_retrieve_response_code( $response );
+
+			error_log( print_r( $response_status, true ) );
+
+			if ( 200 == $response_status ) {
+			$order_data_res = json_decode( wp_remote_retrieve_body( $response ) );
+			error_log( print_r( $order_data_res, true ) );
+
+				if ( is_array( $order_data_res ) && count( $order_data_res ) > 0 ) {
+					foreach ( $order_data_res as $key => $value) {
+						error_log( print_r( $value->orderNumber, true ) );
+					}
+				}
+			}
+	}
+
+}
+//add_action( 'myronja_update_order_status', 'myronja_update_order_status_cb' );
