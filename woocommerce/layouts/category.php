@@ -154,54 +154,6 @@
 						</div>
 
 						<?php
-
-						// List Brand subcategories.
-						$brand_cat      = get_term_by( 'slug', 'brands', 'product_cat' );
-						$brand_sub_cats = get_categories(
-							array(
-								'parent'   => $brand_cat->term_id,
-								'taxonomy' => 'product_cat',
-							)
-						);
-						?>
-
-						<h4 class="flatsome-child-filter-sub-cat-title"><?php echo esc_html( $brand_cat->name ); ?></h4>
-						<div class="ux-menu stack stack-col justify-start ux-menu--divider-solid" >
-
-						<?php
-						foreach ( $brand_sub_cats as $brand_sub_cat => $val ) {
-
-							// Logic for hiding those cateogories which when combined to parent category does not have any product within them.
-							$args = array(
-								'post_type'   => 'product',
-								'post_status' => 'publish',
-								'tax_query'   => array(
-									array(
-										'taxonomy' => 'product_cat',
-										'field'    => 'term_id',
-										'terms'    => array( $val->term_id, $cat_data->term_id ),
-										'operator' => 'AND',
-									),
-								),
-							);
-
-							$query = new WP_Query( $args );
-
-							if ( $query->have_posts() ) :
-								?>
-								<div class="ux-menu-link flex menu-item flatsome-child-related-product-categories-item">
-									<a href="#" class="ux-menu-link__link flex current-menu-item flatsome-child-related-product-categories-link" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
-										<?php echo esc_html( $val->name ); ?>
-									</a>
-								</div>
-								<?php
-							endif;
-							wp_reset_postdata();
-						}
-						?>
-						</div>
-
-						<?php
 					} elseif ( 'hudtype' === $parent_slug ) {
 
 						// List Produkt type subcategories.
@@ -295,58 +247,7 @@
 						}
 						?>
 						</div>
-
-						<?php
-
-						// List Brand subcategories.
-						$brand_cat      = get_term_by( 'slug', 'brands', 'product_cat' );
-						$brand_sub_cats = get_categories(
-							array(
-								'parent'   => $brand_cat->term_id,
-								'taxonomy' => 'product_cat',
-							)
-						);
-						?>
-
-						<h4 class="flatsome-child-filter-sub-cat-title"><?php echo esc_html( $brand_cat->name ); ?></h4>
-						<div class="ux-menu stack stack-col justify-start ux-menu--divider-solid" >
-
-						<?php
-						foreach ( $brand_sub_cats as $brand_sub_cat => $val ) {
-
-							// Logic for hiding those cateogories which when combined to parent category does not have any product within them.
-							$args = array(
-								'post_type'   => 'product',
-								'post_status' => 'publish',
-								'tax_query'   => array(
-									array(
-										'taxonomy' => 'product_cat',
-										'field'    => 'term_id',
-										'terms'    => array( $val->term_id, $cat_data->term_id ),
-										'operator' => 'AND',
-									),
-								),
-							);
-
-							$query = new WP_Query( $args );
-
-							if ( $query->have_posts() ) :
-								?>
-								<div class="ux-menu-link flex menu-item flatsome-child-related-product-categories-item">
-									<a href="#" class="ux-menu-link__link flex current-menu-item flatsome-child-related-product-categories-link" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
-										<?php echo esc_html( $val->name ); ?>
-									</a>
-								</div>
-								<?php
-							endif;
-							wp_reset_postdata();
-						}
-						?>
-						</div>
-
-						<?php
-
-
+					<?php
 					} elseif ( 'hudtilstand' === $parent_slug ) {
 
 						// List Produkt type subcategories.
@@ -442,55 +343,6 @@
 
 						?>
 						</div>
-
-						<?php
-
-						// List Brand subcategories.
-						$brand_cat      = get_term_by( 'slug', 'brands', 'product_cat' );
-						$brand_sub_cats = get_categories(
-							array(
-								'parent'   => $brand_cat->term_id,
-								'taxonomy' => 'product_cat',
-							)
-						);
-						?>
-
-						<h4 class="flatsome-child-filter-sub-cat-title"><?php echo esc_html( $brand_cat->name ); ?></h4>
-						<div class="ux-menu stack stack-col justify-start ux-menu--divider-solid" >
-
-						<?php
-						foreach ( $brand_sub_cats as $brand_sub_cat => $val ) {
-
-							// Logic for hiding those cateogories which when combined to parent category does not have any product within them.
-							$args = array(
-								'post_type'   => 'product',
-								'post_status' => 'publish',
-								'tax_query'   => array(
-									array(
-										'taxonomy' => 'product_cat',
-										'field'    => 'term_id',
-										'terms'    => array( $val->term_id, $cat_data->term_id ),
-										'operator' => 'AND',
-									),
-								),
-							);
-
-							$query = new WP_Query( $args );
-
-							if ( $query->have_posts() ) :
-								?>
-								<div class="ux-menu-link flex menu-item flatsome-child-related-product-categories-item">
-									<a href="#" class="ux-menu-link__link flex current-menu-item flatsome-child-related-product-categories-link" data-category-id="<?php echo esc_attr( $val->term_id ); ?>">
-										<?php echo esc_html( $val->name ); ?>
-									</a>
-								</div>
-								<?php
-							endif;
-							wp_reset_postdata();
-						}
-						?>
-						</div>
-
 						<?php
 					} elseif ( 'brands' === $parent_slug ) {
 
