@@ -435,7 +435,7 @@ function misha_remove_my_account_links( $menu_links ){
 	unset( $menu_links[ 'dashboard' ] ); // Disable Dashboard
 	unset( $menu_links[ 'payment-methods' ] ); // Disable Payment Methods
 	unset( $menu_links[ 'downloads' ] ); // Disable Downloads
-	unset($items['edit-address']); //disable edit-address
+	unset( $menu_links['edit-address']); //disable edit-address
 	
 	return $menu_links;
 	
