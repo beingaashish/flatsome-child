@@ -411,3 +411,192 @@ function myronja_update_order_status_cb() {
 	}
 }
 // add_action( 'myronja_update_order_status', 'myronja_update_order_status_cb' );
+
+
+
+add_filter( 'woocommerce_account_menu_items', 'misha_rename_downloads' );
+
+function misha_rename_downloads( $menu_links ){
+	
+	$menu_links[ 'edit-account' ] = 'Profil';
+	$menu_links[ 'edit-address' ] = 'Adresse';
+	$menu_links[ 'orders' ] = 'Ordre';
+	$menu_links[ 'customer-logout' ] = 'Log af';
+
+	return $menu_links;
+}
+
+
+
+
+// remove unneccesery woocommerce tabs 
+add_filter( 'woocommerce_account_menu_items', 'misha_remove_my_account_links' );
+function misha_remove_my_account_links( $menu_links ){
+	unset( $menu_links[ 'dashboard' ] ); // Disable Dashboard
+	unset( $menu_links[ 'payment-methods' ] ); // Disable Payment Methods
+	unset( $menu_links[ 'downloads' ] ); // Disable Downloads
+	unset($items['edit-address']); //disable edit-address
+	
+	return $menu_links;
+	
+}
+
+// merge edit address tab to edit-account tab
+add_action( 'woocommerce_account_edit-account_endpoint', 'woocommerce_account_edit_address' );
+
+
+// change order of show woocommerce tabs
+add_filter( 'woocommerce_account_menu_items', 'misha_menu_links_reorder' );
+
+function misha_menu_links_reorder( $menu_links ){
+	
+	return array(
+		'edit-account' => __( 'Profil', 'woocommerce' ),
+		'edit-address' => __( 'Adresse', 'woocommerce' ),
+		'orders' => __( 'Ordre', 'woocommerce' ),
+		'return-eringer' => __( 'Returneringer', 'woocommerce' ),
+		'ronja-coins' => __( 'Ronjacoins', 'woocommerce' ),
+		'myronja-myaccount-personal-shopper' => __( 'personal-shopper', 'woocommerce' ),
+		'customer-logout' => __( 'Logout', 'woocommerce' )
+	);
+
+}
+
+
+
+// add Returneringer to woocommerce tab
+
+add_filter ( 'woocommerce_account_menu_items', 'misha_return_eringer_link', 40 );
+function misha_return_eringer_link( $menu_links ){
+	
+	$menu_links = array_slice( $menu_links, 0, 5, true ) 
+	+ array( 'return-eringer' => 'Returneringer' )
+	+ array_slice( $menu_links, 5, NULL, true );
+	
+	return $menu_links;
+
+}
+// register permalink endpoint
+add_action( 'init', 'misha_add_endpoint' );
+function misha_add_endpoint() {
+
+	add_rewrite_endpoint( 'return-eringer', EP_PAGES );
+
+}
+// content for the new page in My Account, woocommerce_account_{ENDPOINT NAME}_endpoint
+add_action( 'woocommerce_account_return-eringer_endpoint', 'misha_my_account_endpoint_content' );
+function misha_my_account_endpoint_content() {
+
+	// of course you can print dynamic content here, one of the most useful functions here is get_current_user_id()
+	echo 'Vi er igang med at forbedre vores retur side. Beklager ulejligheden. Skriv en mail til info@myronja.com med dit ordre nummer og de produkter du ønsker returneret, så sender vi dig en retur label.';
+
+}
+
+
+
+
+// add Ronjacoins to woocommerce tab
+add_filter ( 'woocommerce_account_menu_items', 'misha_ronja_coins_link', 40 );
+function misha_ronja_coins_link( $menu_links ){
+	
+	$menu_links = array_slice( $menu_links, 0, 5, true ) 
+	+ array( 'ronja-coins' => 'Ronjacoins' )
+	+ array_slice( $menu_links, 5, NULL, true );
+	
+	return $menu_links;
+
+}
+// register permalink endpoint
+add_action( 'init', 'misha_adds_endpoint' );
+function misha_adds_endpoint() {
+
+	add_rewrite_endpoint( 'ronja-coins', EP_PAGES );
+
+}
+// content for the new page in My Account, woocommerce_account_{ENDPOINT NAME}_endpoint
+add_action( 'woocommerce_account_ronja-coins_endpoint', 'misha_my_account_endpoints_content' );
+function misha_my_account_endpoints_content() {
+
+	// of course you can print dynamic content here, one of the most useful functions here is get_current_user_id()
+	echo 'Vi er igang med at forbedre vores Ronjacoins. Beklager ulejligheden. Som kompentation kan du bruge denne rabatkode MY10';
+
+}
+
+
+// disable log-out confirmation and redirect user to home page
+add_action( 'template_redirect', 'logout_confirmation' );
+
+function logout_confirmation() {
+
+    global $wp;
+
+    if ( isset( $wp->query_vars['customer-logout'] ) ) {
+
+        wp_redirect( str_replace( '&amp;', '&', wp_logout_url( site_url() ) ) );
+
+        exit;
+
+    }
+
+}
+
+// Add field
+function action_woocommerce_edit_account_form_start() {
+    ?>
+    <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+        <label for="image"><?php esc_html_e( 'Image', 'woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
+        <input type="file" class="woocommerce-Input" name="image" accept="image/x-png,image/gif,image/jpeg">
+    </p>
+    <?php
+}
+add_action( 'woocommerce_edit_account_form_start', 'action_woocommerce_edit_account_form_start' );
+
+// Validate
+function action_woocommerce_save_account_details_errors( $args ){
+    if ( isset($_POST['image']) && empty($_POST['image']) ) {
+        $args->add( 'image_error', __( 'Please provide a valid image', 'woocommerce' ) );
+    }
+}
+add_action( 'woocommerce_save_account_details_errors','action_woocommerce_save_account_details_errors', 10, 1 );
+
+// Save
+function action_woocommerce_save_account_details( $user_id ) {  
+    if ( isset( $_FILES['image'] ) ) {
+        require_once( ABSPATH . 'wp-admin/includes/image.php' );
+        require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+        $attachment_id = media_handle_upload( 'image', 0 );
+
+        if ( is_wp_error( $attachment_id ) ) {
+            update_user_meta( $user_id, 'image', $_FILES['image'] . ": " . $attachment_id->get_error_message() );
+        } else {
+            update_user_meta( $user_id, 'image', $attachment_id );
+        }
+   }
+}
+add_action( 'woocommerce_save_account_details', 'action_woocommerce_save_account_details', 10, 1 );
+
+// Add enctype to form to allow image upload
+function action_woocommerce_edit_account_form_tag() {
+    echo 'enctype="multipart/form-data"';
+} 
+add_action( 'woocommerce_edit_account_form_tag', 'action_woocommerce_edit_account_form_tag' );
+
+// Display
+function action_woocommerce_edit_account_form() {
+    // Get current user id
+    $user_id = get_current_user_id();
+
+    // Get attachment id
+    $attachment_id = get_user_meta( $user_id, 'image', true );
+
+    // True
+    if ( $attachment_id ) {
+        $original_image_url = wp_get_attachment_url( $attachment_id );
+
+        // Display Image instead of URL
+        echo wp_get_attachment_image( $attachment_id, 'full');
+    }
+} 
+add_action( 'woocommerce_edit_account_form', 'action_woocommerce_edit_account_form' );
