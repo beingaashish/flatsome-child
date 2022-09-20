@@ -431,11 +431,11 @@ function misha_rename_downloads( $menu_links ) {
 
 // remove unneccesery woocommerce tabs
 add_filter( 'woocommerce_account_menu_items', 'misha_remove_my_account_links' );
-function misha_remove_my_account_links( $menu_links ) {
-	unset( $menu_links['dashboard'] ); // Disable Dashboard
-	unset( $menu_links['payment-methods'] ); // Disable Payment Methods
-	unset( $menu_links['downloads'] ); // Disable Downloads
-	unset( $items['edit-address'] ); // disable edit-address
+function misha_remove_my_account_links( $menu_links ){
+	unset( $menu_links[ 'dashboard' ] ); // Disable Dashboard
+	unset( $menu_links[ 'payment-methods' ] ); // Disable Payment Methods
+	unset( $menu_links[ 'downloads' ] ); // Disable Downloads
+	unset( $menu_links['edit-address']); //disable edit-address
 
 	return $menu_links;
 
