@@ -84,12 +84,19 @@ function flatsome_child_admin_scripts() {
 	$suffix         = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 	wp_register_script( 'flatsome_child_metabox_scripts', get_stylesheet_directory_uri() . "/assets/admin/js/flatsome_child_metabox_scripts{$suffix}.js", array( 'jquery' ), FLATSOME_CHILD_VERSION, true );
+	// wp_register_script( 'flatsome_child_external_api_script', get_stylesheet_directory_uri() . "/assets/admin/js/flatsome_child_external_api_script{$suffix}.js", array( 'jquery' ), FLATSOME_CHILD_VERSION, true );
 
 	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'personal_shop' === $current_screen->post_type ) {
 		wp_localize_script( 'flatsome_child_metabox_scripts', 'flatsomeChildMetaboxParams', apply_filters( 'personal_shopper_recommend_products_params', array() ) );
 		wp_enqueue_script( 'flatsome_child_metabox_scripts' );
 		wp_enqueue_style( 'flatsome_child_metabox_styles', get_stylesheet_directory_uri() . '/assets/admin/css/flatsome-child-metabox.css', array(), FLATSOME_CHILD_VERSION, 'all' );
 	}
+
+	// if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'shop_order' === $current_screen->post_type ) {
+	// 	wp_localize_script( 'flatsome_child_external_api_script', 'flatsomeChildExternalAPIParams', apply_filters( 'myronja_external_api_params', array() ) );
+	// 	wp_enqueue_script( 'flatsome_child_external_api_script' );
+	// 	wp_enqueue_style( 'flatsome_child_metabox_styles', get_stylesheet_directory_uri() . '/assets/admin/css/flatsome-child-metabox.css', array(), FLATSOME_CHILD_VERSION, 'all' );
+	// }
 }
 add_action( 'admin_enqueue_scripts', 'flatsome_child_admin_scripts' );
 
@@ -144,125 +151,24 @@ function myronja_shipping_detalils_display() {
 	</div>
 	<?php
 }
-add_action( 'woocommerce_before_order_notes', 'myronja_shipping_detalils_display' );
+// add_action( 'woocommerce_before_order_notes', 'myronja_shipping_detalils_display' );
 
 
 /**
- * Undocumented function.
+ * Runs after user places an order.
  *
+ * @param int $order_id Order ID.
  * @return void
  */
 function myronja_update_info_after_order_placed( $order_id ) {
-	$order                  = wc_get_order( $order_id );
-	$endpoint               = 'https://myronja.nu:8888/api/myronja/v1/external-order';
-	$total_coupons_discount = array();
-	$total_discount         = $order->get_total_discount() ? $order->get_total_discount() : 0;
+	$order    = wc_get_order( $order_id );
+	$endpoint = 'https://myronja.nu:8888/api/myronja/v1/external-order';
 
-	error_log( print_r( $order->get_status(), true ) );
+	// Get Order Data in a proper formmated structure.
+	$order_data = myronja_get_formatted_order_data( $order_id, $order );
 
-	var_dump( $order->get_status() );
-
-	// For getting each coupon discounts.
-	if ( count( $order->get_coupon_codes() ) > 0 ) {
-		$coupon_codes = implode( ',', $order->get_coupon_codes() );
-
-		foreach ( $order->get_coupon_codes() as $key => $coupon_code ) {
-
-			// Retrieving the coupon ID.
-			$coupon_post_obj = get_page_by_title( $coupon_code, OBJECT, 'shop_coupon' );
-			$coupon_id       = $coupon_post_obj->ID;
-
-			// Get an instance of WC_Coupon object in an array(necessary to use WC_Coupon methods).
-			$coupon = new WC_Coupon( $coupon_id );
-
-			if ( $coupon->get_discount_type() === 'percent' ) {
-				$order_sub_total_before_discount = floatval( $order->get_subtotal() );
-				$discount_percentage             = floatval( $coupon->get_amount() );
-				$coupon_amount                   = floatval( ( $discount_percentage / 100 ) * $order_sub_total_before_discount );
-			} else {
-				$coupon_amount = floatval( $coupon->get_amount() );
-			}
-
-			array_push( $total_coupons_discount, $coupon_amount );
-		}
-	}
-
-	// Shipping info.
-	$order_data = array(
-		'orderStatus'         => 'INPROGRESS',
-		'orderNumber'         => (string) $order_id,
-		'shippingFirstName'   => $order->get_shipping_first_name(),
-		'shippingLastName'    => $order->get_shipping_last_name(),
-		'shippingEmail'       => $order->get_billing_email(),
-		'shippingAddress'     => $order->get_shipping_address_1(),
-		'shippingAddress2'    => $order->get_shipping_address_2(),
-		'shippingCity'        => $order->get_shipping_city(),
-		'shippingPostalCode'  => $order->get_shipping_postcode(),
-		'shippingPhoneNumber' => $order->get_billing_phone(),
-		'shippingCountry'     => $order->get_shipping_country(),
-		'shippingCountryCode' => 'DK',
-		'billingFirstName'    => $order->get_billing_first_name(),
-		'billingLastName'     => $order->get_billing_last_name(),
-		'billingEmail'        => $order->get_billing_email(),
-		'billingAddress'      => $order->get_billing_address_1(),
-		'billingAddress2'     => $order->get_billing_address_2(),
-		'billingCity'         => $order->get_billing_city(),
-		'billingPostalCode'   => $order->get_billing_postcode(),
-		'billingPhoneNumber'  => $order->get_billing_phone(),
-		'billingCountry'      => $order->get_billing_country(),
-		'billingCountryCode'  => 'DK',
-		'couponCode'          => isset( $coupon_codes ) ? $coupon_codes : '',
-		'voucherCode'         => null,
-		'discountAmount'      => $total_discount,
-		'voucherDiscount'     => $total_coupons_discount && ! empty( $total_coupons_discount ) ? array_sum( $total_coupons_discount ) : 0,
-		'giftCardDiscount'    => 0,
-		'subTotal'            => $order->get_subtotal(),
-		'orderTotal'          => $order->get_total(),
-		'shippingPrice'       => $order->get_shipping_total(),
-		'currency'            => $order->get_currency(),
-		'locale'              => 'dk',
-		'paymentType'         => $order->get_payment_method(),
-		'paymentId'           => $order->get_payment_method(),
-	);
-
-	$cart_items = array();
-
-	foreach ( $order->get_items() as $item_id => $item ) {
-
-		$product_id  = $item->get_product_id();
-		$product_obj = wc_get_product( $product_id );
-
-		$product_detail_arr = array();
-
-		// Code for retrieving product brand.
-		$brand_cat  = get_term_by( 'slug', 'brands', 'product_cat' );
-		$taxonomies = array(
-			'taxonomy' => 'product_cat',
-		);
-		$args       = array(
-			'child_of'   => $brand_cat->term_id,
-			'hide_empty' => true,
-			'object_ids' => $product_id,
-		);
-		$brand_obj  = get_terms( $taxonomies, $args );
-
-		// Code for retrieving image thumbnail.
-		$image_src = wp_get_original_image_url( get_post_thumbnail_id( $product_id ) );
-
-		$product_detail_arr['productWpId']         = $product_id;
-		$product_detail_arr['productName']         = $item->get_name();
-		$product_detail_arr['serialNo']            = get_post_meta( $product_id, '_myronja_product_serial_no', true );
-		$product_detail_arr['productId']           = get_post_meta( $product_id, '_myronja_product_ext_product_id', true );
-		$product_detail_arr['brand']               = $brand_obj ? $brand_obj[0]->name : '';
-		$product_detail_arr['size']                = get_post_meta( $product_id, '_myronja_product_quantity', true );
-		$product_detail_arr['imageUrl']            = $image_src ? $image_src : '';
-		$product_detail_arr['quantity']            = $item->get_quantity();
-		$product_detail_arr['price']               = $product_obj->get_regular_price();
-		$product_detail_arr['priceAfterDiscount']  = $product_obj->get_sale_price() ? $product_obj->get_sale_price() : 0;
-		$product_detail_arr['fromPersonalShopper'] = false;
-
-		array_push( $cart_items, $product_detail_arr );
-	}
+	// Get cart items in a proper formatted order.
+	$cart_items = myronja_get_formatted_order_cart_items_data( $order );
 
 	$data = array(
 		'orderData' => $order_data,
@@ -285,10 +191,17 @@ function myronja_update_info_after_order_placed( $order_id ) {
 	error_log( print_r( wp_json_encode( $data ), true ) );
 
 	if ( 'processing' === $order->get_status() ) {
-		// Also check if the order with same orderNumber already exist.
-		// Send request to external API to create an order.
 		$response = wp_remote_post( $endpoint, $api_args );
-		error_log( print_r( $response, true ) );
+
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if ( 200 === $response_code ) {
+			$order_data_res = json_decode( wp_remote_retrieve_body( $response ) );
+
+			if ( 'INPROGRESS' === $order_data_res->status ) {
+				$order_status_res = $order->update_status( 'external-order', '', true );
+			}
+		}
 	}
 }
 // add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );
@@ -314,7 +227,7 @@ function myronja_wpcron_interval( $schedules ) {
 
 	return $schedules;
 }
-add_filter( 'cron_schedules', 'myronja_wpcron_interval' );
+// add_filter( 'cron_schedules', 'myronja_wpcron_interval' );
 
 /**
  * Adds cron event.
@@ -348,11 +261,7 @@ function myronja_update_order_status_cb() {
 	if ( $orders ) {
 		// Loop through each WC_Order object
 		foreach ( $orders as $order ) {
-			// (Important) Also add condition, if the order already exist in the external API if it doesnot exists create a new order in the API.
-			// if ( orderDoesNotExistInExternalAPI ) {
-			//
-			// }
-			if ( $order->get_id() && $order->get_status() === 'processing' ) {
+			if ( $order->get_id() && $order->get_status() === 'external-order' ) {
 				$order_id_str = (string) $order->get_id();
 				array_push( $orders_id_arr, $order_id_str );
 			}
@@ -431,11 +340,11 @@ function misha_rename_downloads( $menu_links ) {
 
 // remove unneccesery woocommerce tabs
 add_filter( 'woocommerce_account_menu_items', 'misha_remove_my_account_links' );
-function misha_remove_my_account_links( $menu_links ){
-	unset( $menu_links[ 'dashboard' ] ); // Disable Dashboard
-	unset( $menu_links[ 'payment-methods' ] ); // Disable Payment Methods
-	unset( $menu_links[ 'downloads' ] ); // Disable Downloads
-	unset( $menu_links['edit-address']); //disable edit-address
+function misha_remove_my_account_links( $menu_links ) {
+	unset( $menu_links['dashboard'] ); // Disable Dashboard
+	unset( $menu_links['payment-methods'] ); // Disable Payment Methods
+	unset( $menu_links['downloads'] ); // Disable Downloads
+	unset( $menu_links['edit-address'] ); // disable edit-address
 
 	return $menu_links;
 

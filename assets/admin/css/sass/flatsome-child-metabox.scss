@@ -4,6 +4,7 @@
 	box-sizing: border-box;
 	padding: 9px;
 	color: #555;
+
 	label {
 		float: left;
 		width: 150px;
@@ -11,9 +12,9 @@
 		margin: 0 0 0 -150px;
 	}
 
-		p.form-field {
-			padding: 5px 20px 5px 162px !important;
-		}
+	p.form-field {
+		padding: 5px 20px 5px 162px !important;
+	}
 
 	.short,
 	input[type=number].short,
@@ -74,7 +75,7 @@
 		display: flex;
 		align-items: center;
 
-		& > *:not(:last-child) {
+		&>*:not(:last-child) {
 			margin-right: 20px;
 		}
 
@@ -163,7 +164,7 @@
 		margin-bottom: 15px;
 		font-size: 18px;
 
-		& > *:not(:last-child) {
+		&>*:not(:last-child) {
 			margin-right: 20px;
 		}
 
@@ -171,7 +172,7 @@
 			margin: 0;
 			flex-basis: 100px;
 
-		img {
+			img {
 				display: block;
 				width: 100px;
 				height: auto;
@@ -201,4 +202,36 @@
 	font-size: 20px;
 	margin-bottom: 20px;
 	padding: 0;
+}
+
+p.hideMe {
+	-moz-animation: cssAnimation 0s ease-in 5s forwards;
+	/* Firefox */
+	-webkit-animation: cssAnimation 0s ease-in 5s forwards;
+	/* Safari and Chrome */
+	-o-animation: cssAnimation 0s ease-in 5s forwards;
+	/* Opera */
+	animation: cssAnimation 0s ease-in 5s forwards;
+	-webkit-animation-fill-mode: forwards;
+	animation-fill-mode: forwards;
+}
+
+@keyframes cssAnimation {
+	to {
+		width: 0;
+		height: 0;
+		overflow: hidden;
+		position: absolute;
+		left: -999999999px;
+	}
+}
+
+@-webkit-keyframes cssAnimation {
+	to {
+		width: 0;
+		height: 0;
+		visibility: hidden;
+		position: absolute;
+		left: -999999999px;
+	}
 }

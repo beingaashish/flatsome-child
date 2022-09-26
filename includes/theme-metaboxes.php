@@ -46,6 +46,16 @@ function flatsome_child_add_meta_box() {
 		'personal_shopper_display_admin_comments_metabox',
 		'personal_shop',
 	);
+
+	// Metabox for order edit screen.
+	// add_meta_box(
+	// 	'external_order__metabox',
+	// 	__( 'External API Status.', 'woocommerce' ),
+	// 	'external_order_display_metabox_content',
+	// 	'shop_order',
+	// 	'side',
+	// 	'core'
+	// );
 }
 add_action( 'add_meta_boxes', 'flatsome_child_add_meta_box' );
 
@@ -466,3 +476,33 @@ function personal_shopper_admin_comments_metabox( $post_id ) {
 	}
 }
 add_action( 'save_post', 'personal_shopper_admin_comments_metabox' );
+
+
+/**
+ * Displays a button for creating order in external API given that
+ * order staus must be 'processing.
+ *
+ * @param object $order_post Order object.
+ *
+ * @return void
+ */
+function external_order_display_metabox_content( $order_post ) {
+
+	if ( 'wc-processing' === $order_post->post_status ) :
+		$order_id = $order_post->ID;
+		?>
+
+		<a
+		href="#"
+		button class="myronja-create-external-order button button-primary"
+		id="<?php echo esc_attr( 'myronja-create-order-' . $order_id ); ?>"
+		style="display: block; text-align: center;"
+		data-order-id="<?php echo esc_attr( $order_id ); ?>">
+			<?php esc_html_e( 'Update this Order in External API', 'woocommerce' ); ?>
+		</a>
+
+		<?php else : ?>
+			<p><?php esc_html_e( 'Order details updated External API', 'woocommerce' ); ?></p>
+			<?php
+	endif;
+}

@@ -227,3 +227,33 @@
 	margin-bottom: 20px;
 	padding: 0;
 }
+
+p.hideMe {
+	/* Firefox */
+	-webkit-animation: cssAnimation 0s ease-in 5s forwards;
+	/* Safari and Chrome */
+	/* Opera */
+	animation: cssAnimation 0s ease-in 5s forwards;
+	-webkit-animation-fill-mode: forwards;
+	animation-fill-mode: forwards;
+}
+
+@keyframes cssAnimation {
+	to {
+		width: 0;
+		height: 0;
+		overflow: hidden;
+		position: absolute;
+		left: -999999999px;
+	}
+}
+
+@-webkit-keyframes cssAnimation {
+	to {
+		width: 0;
+		height: 0;
+		visibility: hidden;
+		position: absolute;
+		left: -999999999px;
+	}
+}
