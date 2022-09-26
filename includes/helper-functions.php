@@ -435,7 +435,7 @@ function myronja_external_order_status() {
 		)
 	);
 }
-add_action( 'init', 'myronja_external_order_status' );
+// add_action( 'init', 'myronja_external_order_status' );
 
 /**
  * Shows custom order status in dropdown.
@@ -458,7 +458,7 @@ function myronja_add_external_order_status_to_dropdown( $order_statuses ) {
 
 	return $new_order_statuses;
 }
-add_filter( 'wc_order_statuses', 'myronja_add_external_order_status_to_dropdown' );
+// add_filter( 'wc_order_statuses', 'myronja_add_external_order_status_to_dropdown' );
 
 /**
  * Returns Order data in a proper formatted structure for external API call.
