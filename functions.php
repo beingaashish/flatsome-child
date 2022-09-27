@@ -188,8 +188,6 @@ function myronja_update_info_after_order_placed( $order_id ) {
 		'body'        => wp_json_encode( $data ),
 	);
 
-	error_log( print_r( wp_json_encode( $data ), true ) );
-
 	if ( 'processing' === $order->get_status() ) {
 		$response = wp_remote_post( $endpoint, $api_args );
 
@@ -252,8 +250,6 @@ function myronja_update_order_status_cb() {
 		return;
 	}
 
-	error_log( print_r( 'Cron just ran', true ) );
-
 	$orders_id_arr = array();
 
 	$orders = wc_get_orders( array( 'numberposts' => -1 ) );
@@ -299,7 +295,6 @@ function myronja_update_order_status_cb() {
 					'DELIVERED' => 'completed',
 				);
 				$order_data_res       = json_decode( wp_remote_retrieve_body( $response ) );
-				error_log( print_r( $order_data_res, true ) );
 
 				if ( is_array( $order_data_res ) && count( $order_data_res ) > 0 ) {
 					foreach ( $order_data_res as $key => $value ) {
@@ -309,7 +304,6 @@ function myronja_update_order_status_cb() {
 						if ( $wc_order ) {
 							if ( array_key_exists( $value->status, $order_status_map_arr ) ) {
 
-								error_log( print_r( $order_status_map_arr[ $value->status ], true ) );
 								$wc_order->update_status( $order_status_map_arr[ $value->status ], '', true );
 
 							}

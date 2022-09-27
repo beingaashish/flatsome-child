@@ -220,12 +220,12 @@ function flatsome_child_product_effects() {
 		</div>
 		<div class="row">
 			<?php
-			$all_product_effect_terms = get_terms(
-				array(
-					'taxonomy'   => 'product_effect',
-					'hide_empty' => false,
-				)
-			);
+			// $all_product_effect_terms = get_terms(
+			// 	array(
+			// 		'taxonomy'   => 'product_effect',
+			// 		'hide_empty' => false,
+			// 	)
+			// );
 
 			$selected_product_effect_terms = get_the_terms( $product_id, 'product_effect' );
 
@@ -233,12 +233,12 @@ function flatsome_child_product_effects() {
 				$selected_product_effect_terms = array();
 			}
 
-			foreach ( $all_product_effect_terms as $term_index => $term_obj ) {
+			foreach ( $selected_product_effect_terms as $term_index => $term_obj ) {
 				?>
 			<div class="col medium-3 small-6 large-3">
 				<div class="col-inner">
 					<div class="img has-hover x md-x lg-x y md-y lg-y">
-						<div class="img-inner dark <?php echo esc_attr( ! in_array( $term_obj, $selected_product_effect_terms ) ? 'flatsome-child-dim-image' : '' ); ?>">
+						<div class="img-inner dark">
 							<img width="216" height="253" src="<?php echo esc_attr( get_stylesheet_directory_uri() . '/assets/images/' . $term_obj->slug . '.png' ); ?>" class="attachment-large size-large" alt="" loading="lazy">
 						</div>
 					</div>
@@ -596,8 +596,6 @@ function myronja_handle_order_create_request_in_external_api() {
 
 		$order_id = isset( $_POST['orderId'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['orderId'] ) ), true ) : '';
 
-		error_log( print_r( $order_id, true ) );
-
 		$order    = wc_get_order( $order_id );
 		$endpoint = 'https://myronja.nu:8888/api/myronja/v1/external-order';
 
@@ -630,8 +628,6 @@ function myronja_handle_order_create_request_in_external_api() {
 
 			$response_code  = wp_remote_retrieve_response_code( $response );
 			$order_data_res = json_decode( wp_remote_retrieve_body( $response ) );
-
-			error_log( print_r( $order_data_res->message->original->constraint, true ) );
 
 			if ( property_exists( $order_data_res, 'message' ) ) {
 
