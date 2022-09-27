@@ -659,3 +659,23 @@ function myronja_handle_order_create_request_in_external_api() {
 }
 // add_action( 'wp_ajax_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
 // add_action( 'wp_ajax_nopriv_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
+
+
+/**
+ * Hide shipping rates when free shipping is available.
+ * Updated to support WooCommerce 2.6 Shipping Zones.
+ *
+ * @param array $rates Array of rates found for the package.
+ * @return array
+ */
+function myronja_hide_shipping_when_free_is_available( $rates ) {
+	$free = array();
+	foreach ( $rates as $rate_id => $rate ) {
+		if ( 'free_shipping' === $rate->method_id ) {
+			$free[ $rate_id ] = $rate;
+			break;
+		}
+	}
+	return ! empty( $free ) ? $free : $rates;
+}
+add_filter( 'woocommerce_package_rates', 'myronja_hide_shipping_when_free_is_available', 100 );
