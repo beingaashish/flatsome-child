@@ -84,7 +84,7 @@ function flatsome_child_admin_scripts() {
 	$suffix         = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 	wp_register_script( 'flatsome_child_metabox_scripts', get_stylesheet_directory_uri() . "/assets/admin/js/flatsome_child_metabox_scripts{$suffix}.js", array( 'jquery' ), FLATSOME_CHILD_VERSION, true );
-	// wp_register_script( 'flatsome_child_external_api_script', get_stylesheet_directory_uri() . "/assets/admin/js/flatsome_child_external_api_script{$suffix}.js", array( 'jquery' ), FLATSOME_CHILD_VERSION, true );
+	wp_register_script( 'flatsome_child_external_api_script', get_stylesheet_directory_uri() . "/assets/admin/js/flatsome_child_external_api_script{$suffix}.js", array( 'jquery' ), FLATSOME_CHILD_VERSION, true );
 
 	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'personal_shop' === $current_screen->post_type ) {
 		wp_localize_script( 'flatsome_child_metabox_scripts', 'flatsomeChildMetaboxParams', apply_filters( 'personal_shopper_recommend_products_params', array() ) );
@@ -92,11 +92,11 @@ function flatsome_child_admin_scripts() {
 		wp_enqueue_style( 'flatsome_child_metabox_styles', get_stylesheet_directory_uri() . '/assets/admin/css/flatsome-child-metabox.css', array(), FLATSOME_CHILD_VERSION, 'all' );
 	}
 
-	// if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'shop_order' === $current_screen->post_type ) {
-	// 	wp_localize_script( 'flatsome_child_external_api_script', 'flatsomeChildExternalAPIParams', apply_filters( 'myronja_external_api_params', array() ) );
-	// 	wp_enqueue_script( 'flatsome_child_external_api_script' );
-	// 	wp_enqueue_style( 'flatsome_child_metabox_styles', get_stylesheet_directory_uri() . '/assets/admin/css/flatsome-child-metabox.css', array(), FLATSOME_CHILD_VERSION, 'all' );
-	// }
+	if ( $current_screen && property_exists( $current_screen, 'post_type' ) && 'shop_order' === $current_screen->post_type ) {
+		wp_localize_script( 'flatsome_child_external_api_script', 'flatsomeChildExternalAPIParams', apply_filters( 'myronja_external_api_params', array() ) );
+		wp_enqueue_script( 'flatsome_child_external_api_script' );
+		wp_enqueue_style( 'flatsome_child_metabox_styles', get_stylesheet_directory_uri() . '/assets/admin/css/flatsome-child-metabox.css', array(), FLATSOME_CHILD_VERSION, 'all' );
+	}
 }
 add_action( 'admin_enqueue_scripts', 'flatsome_child_admin_scripts' );
 
@@ -162,7 +162,7 @@ function myronja_shipping_detalils_display() {
  */
 function myronja_update_info_after_order_placed( $order_id ) {
 	$order    = wc_get_order( $order_id );
-	$endpoint = 'https://myronja.nu:8888/api/myronja/v1/external-order';
+	$endpoint = 'https://myronja.com:8843/api/myronja/v1/external-order';
 
 	// Get Order Data in a proper formmated structure.
 	$order_data = myronja_get_formatted_order_data( $order_id, $order );
@@ -202,7 +202,7 @@ function myronja_update_info_after_order_placed( $order_id ) {
 		}
 	}
 }
-// add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );
+add_action( 'woocommerce_thankyou', 'myronja_update_info_after_order_placed', 10, 1 );
 
 
 /* Code for running crons that updates order status. */
@@ -217,7 +217,7 @@ function myronja_wpcron_interval( $schedules ) {
 
 	// Two hours custom interval for cron.
 	$two_hour = array(
-		'interval' => 60,
+		'interval' => 6000,
 		'display'  => 'Two Hour',
 	);
 
@@ -225,7 +225,7 @@ function myronja_wpcron_interval( $schedules ) {
 
 	return $schedules;
 }
-// add_filter( 'cron_schedules', 'myronja_wpcron_interval' );
+add_filter( 'cron_schedules', 'myronja_wpcron_interval' );
 
 /**
  * Adds cron event.
@@ -237,7 +237,7 @@ function myronja_wpcron_activation() {
 		wp_schedule_event( time(), 'two_hour', 'myronja_update_order_status' );
 	}
 }
-// add_action( 'wp', 'myronja_wpcron_activation' );
+add_action( 'wp', 'myronja_wpcron_activation' );
 
 
 /**
@@ -255,7 +255,7 @@ function myronja_update_order_status_cb() {
 	$orders = wc_get_orders( array( 'numberposts' => -1 ) );
 
 	if ( $orders ) {
-		// Loop through each WC_Order object
+		// Loop through each WC_Order object.
 		foreach ( $orders as $order ) {
 			if ( $order->get_id() && $order->get_status() === 'external-order' ) {
 				$order_id_str = (string) $order->get_id();
@@ -270,7 +270,7 @@ function myronja_update_order_status_cb() {
 				'orderNumbers' => $orders_id_arr,
 			);
 
-			$endpoint = 'https://myronja.nu:8888/api/myronja/v1/external-order/order-status';
+			$endpoint = 'https://myronja.com:8843/api/myronja/v1/external-order/order-status';
 
 			$api_args = array(
 				'headers'     => array(
@@ -313,7 +313,7 @@ function myronja_update_order_status_cb() {
 			}
 	}
 }
-// add_action( 'myronja_update_order_status', 'myronja_update_order_status_cb' );
+add_action( 'myronja_update_order_status', 'myronja_update_order_status_cb' );
 
 
 

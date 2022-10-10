@@ -58,6 +58,7 @@ const myronjaExternalAPI = (
           $('#order_status').val('wc-external-order').change();
         }
         if ( response !== 200 && 'Order already exists in External API' !== response ) {
+          console.log(response);
           const textNode = document.createElement('p'),
             errorText = document.createTextNode('Not able to update order in external API');
 

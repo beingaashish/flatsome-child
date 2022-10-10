@@ -48,14 +48,14 @@ function flatsome_child_add_meta_box() {
 	);
 
 	// Metabox for order edit screen.
-	// add_meta_box(
-	// 	'external_order__metabox',
-	// 	__( 'External API Status.', 'woocommerce' ),
-	// 	'external_order_display_metabox_content',
-	// 	'shop_order',
-	// 	'side',
-	// 	'core'
-	// );
+	add_meta_box(
+		'external_order__metabox',
+		__( 'External API Status.', 'woocommerce' ),
+		'external_order_display_metabox_content',
+		'shop_order',
+		'side',
+		'core'
+	);
 }
 add_action( 'add_meta_boxes', 'flatsome_child_add_meta_box' );
 
@@ -501,8 +501,14 @@ function external_order_display_metabox_content( $order_post ) {
 			<?php esc_html_e( 'Update this Order in External API', 'woocommerce' ); ?>
 		</a>
 
+		<?php elseif ( 'wc-on-hold' === $order_post->post_status ) : ?>
+			<p><?php esc_html_e( 'Update this order in External API once the order status is "processing".', 'woocommerce' ); ?></p>
+		<?php elseif ( 'wc-pending' === $order_post->post_status ) : ?>
+			<p><?php esc_html_e( 'Update this order in External API once the order status is "processing".', 'woocommerce' ); ?></p>
+		<?php elseif ( 'wc-external-order' === $order_post->post_status ) : ?>
+			<p><?php esc_html_e( 'Order Updated in External API".', 'woocommerce' ); ?></p>
 		<?php else : ?>
-			<p><?php esc_html_e( 'Order details updated External API', 'woocommerce' ); ?></p>
+			<p><?php esc_html_e( 'Order Updated in External API".', 'woocommerce' ); ?></p>
 			<?php
 	endif;
 }

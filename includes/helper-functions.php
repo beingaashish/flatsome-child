@@ -221,10 +221,10 @@ function flatsome_child_product_effects() {
 		<div class="row">
 			<?php
 			// $all_product_effect_terms = get_terms(
-			// 	array(
-			// 		'taxonomy'   => 'product_effect',
-			// 		'hide_empty' => false,
-			// 	)
+			// array(
+			// 'taxonomy'   => 'product_effect',
+			// 'hide_empty' => false,
+			// )
 			// );
 
 			$selected_product_effect_terms = get_the_terms( $product_id, 'product_effect' );
@@ -435,7 +435,7 @@ function myronja_external_order_status() {
 		)
 	);
 }
-// add_action( 'init', 'myronja_external_order_status' );
+add_action( 'init', 'myronja_external_order_status' );
 
 /**
  * Shows custom order status in dropdown.
@@ -458,7 +458,7 @@ function myronja_add_external_order_status_to_dropdown( $order_statuses ) {
 
 	return $new_order_statuses;
 }
-// add_filter( 'wc_order_statuses', 'myronja_add_external_order_status_to_dropdown' );
+add_filter( 'wc_order_statuses', 'myronja_add_external_order_status_to_dropdown' );
 
 /**
  * Returns Order data in a proper formatted structure for external API call.
@@ -578,7 +578,7 @@ function myronja_get_formatted_order_cart_items_data( $order ) {
 		$product_detail_arr['imageUrl']            = $image_src ? $image_src : '';
 		$product_detail_arr['quantity']            = $item->get_quantity();
 		$product_detail_arr['price']               = $product_obj->get_regular_price();
-		$product_detail_arr['priceAfterDiscount']  = $product_obj->get_sale_price() == 0 ? $product_obj->get_regular_price() : $product_obj->get_sale_price();
+		$product_detail_arr['priceAfterDiscount']  = $product_obj->get_sale_price() ? $product_obj->get_sale_price() : $product_obj->get_regular_price();
 		$product_detail_arr['fromPersonalShopper'] = false;
 
 		array_push( $cart_items, $product_detail_arr );
@@ -587,6 +587,11 @@ function myronja_get_formatted_order_cart_items_data( $order ) {
 	return $cart_items;
 }
 
+/**
+ * Undocumented function.
+ *
+ * @return void
+ */
 function myronja_handle_order_create_request_in_external_api() {
 	if ( ! is_user_logged_in() ) {
 		return;
@@ -597,7 +602,7 @@ function myronja_handle_order_create_request_in_external_api() {
 		$order_id = isset( $_POST['orderId'] ) ? json_decode( sanitize_text_field( wp_json_encode( $_POST['orderId'] ) ), true ) : '';
 
 		$order    = wc_get_order( $order_id );
-		$endpoint = 'https://myronja.nu:8888/api/myronja/v1/external-order';
+		$endpoint = 'https://myronja.com:8843/api/myronja/v1/external-order';
 
 		// Get Order Data in a proper formmated structure.
 		$order_data = myronja_get_formatted_order_data( $order_id, $order );
@@ -627,12 +632,13 @@ function myronja_handle_order_create_request_in_external_api() {
 			$response = wp_remote_post( $endpoint, $api_args );
 
 			$response_code  = wp_remote_retrieve_response_code( $response );
-			$order_data_res = json_decode( wp_remote_retrieve_body( $response ) );
+			$response_body  = wp_remote_retrieve_body( $response );
+			$order_data_res = json_decode( $response_body );
 
-			if ( property_exists( $order_data_res, 'message' ) ) {
+			if ( property_exists( $response_body, 'message' ) ) {
 
 				if ( 'unique_order_number' === $order_data_res->message->original->constraint ) {
-					$message_info     = __( 'Order already exists in External API', );
+					$message_info     = __( 'Order already exists in External API', 'woocommerce' );
 					$order_status_res = $order->update_status( 'external-order', '', true );
 
 					echo wp_json_encode( $message_info );
@@ -651,14 +657,14 @@ function myronja_handle_order_create_request_in_external_api() {
 					}
 				}
 			} else {
-				echo wp_json_encode( $response_code );
+				echo wp_json_encode( $response );
 				wp_die();
 			}
 		}
 	}
 }
-// add_action( 'wp_ajax_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
-// add_action( 'wp_ajax_nopriv_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
+add_action( 'wp_ajax_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
+add_action( 'wp_ajax_nopriv_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
 
 
 /**
