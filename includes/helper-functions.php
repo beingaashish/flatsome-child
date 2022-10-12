@@ -333,7 +333,7 @@ function myronja_external_api_params() {
 
 	return $arr;
 }
-add_filter( 'myronja_external_api_params', 'myronja_external_api_params' );
+// add_filter( 'myronja_external_api_params', 'myronja_external_api_params' );
 
 /**
  * Adds extra fields to the JSON response.
@@ -435,7 +435,7 @@ function myronja_external_order_status() {
 		)
 	);
 }
-add_action( 'init', 'myronja_external_order_status' );
+// add_action( 'init', 'myronja_external_order_status' );
 
 /**
  * Shows custom order status in dropdown.
@@ -458,7 +458,7 @@ function myronja_add_external_order_status_to_dropdown( $order_statuses ) {
 
 	return $new_order_statuses;
 }
-add_filter( 'wc_order_statuses', 'myronja_add_external_order_status_to_dropdown' );
+// add_filter( 'wc_order_statuses', 'myronja_add_external_order_status_to_dropdown' );
 
 /**
  * Returns Order data in a proper formatted structure for external API call.
@@ -663,8 +663,8 @@ function myronja_handle_order_create_request_in_external_api() {
 		}
 	}
 }
-add_action( 'wp_ajax_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
-add_action( 'wp_ajax_nopriv_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
+// add_action( 'wp_ajax_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
+// add_action( 'wp_ajax_nopriv_myronja_handle_order_create_request_in_external_api', 'myronja_handle_order_create_request_in_external_api' );
 
 
 /**

@@ -48,14 +48,14 @@ function flatsome_child_add_meta_box() {
 	);
 
 	// Metabox for order edit screen.
-	add_meta_box(
-		'external_order__metabox',
-		__( 'External API Status.', 'woocommerce' ),
-		'external_order_display_metabox_content',
-		'shop_order',
-		'side',
-		'core'
-	);
+	// add_meta_box(
+	// 'external_order__metabox',
+	// __( 'External API Status.', 'woocommerce' ),
+	// 'external_order_display_metabox_content',
+	// 'shop_order',
+	// 'side',
+	// 'core'
+	// );
 }
 add_action( 'add_meta_boxes', 'flatsome_child_add_meta_box' );
 
