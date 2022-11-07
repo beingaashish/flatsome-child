@@ -341,78 +341,100 @@ function myronja_external_api_params() {
  * @return void
  */
 function flatsome_child_custom_rest() {
-	register_rest_field(
-		'product',
-		'myronjaProductPrice',
-		array(
-			'get_callback' => function () {
-				$cur_product = wc_get_product();
-				return $cur_product->get_price();
-			},
-		)
-	);
+		register_rest_field(
+			'product',
+			'myronjaProductPrice',
+			array(
+				'get_callback' => function () {
+					$cur_product = wc_get_product();
 
-	register_rest_field(
-		'product',
-		'myronjaProductAmount',
-		array(
-			'get_callback' => function () {
-				$cur_product = wc_get_product();
-				return get_post_meta( $cur_product->get_id(), '_myronja_product_quantity', true );
-			},
-		)
-	);
+					error_log( $cur_product );
+					error_log( print_r( $cur_product, true ) );
+					if ( $cur_product ) {
+						return $cur_product->get_price();
+					} else {
+						return null;
+					}
+				},
+			)
+		);
+		register_rest_field(
+			'product',
+			'myronjaProductAmount',
+			array(
+				'get_callback' => function () {
+					$cur_product = wc_get_product();
+					if ( $cur_product ) {
+						return get_post_meta( $cur_product->get_id(), '_myronja_product_quantity', true );
+					} else {
+						return null;
+					}
+				},
+			)
+		);
+		register_rest_field(
+			'product',
+			'myronjaProductBrand',
+			array(
+				'get_callback' => function () {
+					$cur_product = wc_get_product();
 
-	register_rest_field(
-		'product',
-		'myronjaProductBrand',
-		array(
-			'get_callback' => function () {
-				$cur_product = wc_get_product();
-				$brand_cat   = get_term_by( 'slug', 'brands', 'product_cat' );
+					if ( $cur_product ) {
 
-				$taxonomies = array(
-					'taxonomy' => 'product_cat',
-				);
+						$brand_cat   = get_term_by( 'slug', 'brands', 'product_cat' );
 
-				$args = array(
-					'child_of'   => $brand_cat->term_id,
-					'hide_empty' => true,
-					'object_ids' => $cur_product->get_id(),
-				);
+						$taxonomies = array(
+							'taxonomy' => 'product_cat',
+						);
 
-				$brand_obj = get_terms( $taxonomies, $args );
+						$args = array(
+							'child_of'   => $brand_cat->term_id,
+							'hide_empty' => true,
+							'object_ids' => $cur_product->get_id(),
+						);
 
-				return $brand_obj[0]->name;
-			},
-		)
-	);
+						$brand_obj = get_terms( $taxonomies, $args );
 
-	register_rest_field(
-		'product',
-		'myronjaProductThumbnailSrc',
-		array(
-			'get_callback' => function () {
-				$cur_product = wc_get_product();
-				$image_src   = wp_get_attachment_image_src( get_post_thumbnail_id( $cur_product->get_id() ), 'thumbnail' );
-				return $image_src;
-			},
-		),
-	);
+						return $brand_obj[0]->name;
+					} else {
+						return null;
+					}
+				},
+			)
+		);
+		register_rest_field(
+			'product',
+			'myronjaProductThumbnailSrc',
+			array(
+				'get_callback' => function () {
+					$cur_product = wc_get_product();
 
-	register_rest_field(
-		'product',
-		'myronjaProductStockStatus',
-		array(
-			'get_callback' => function () {
-				$cur_product = wc_get_product();
-				return $cur_product->is_in_stock();
-			},
-		),
-	);
+					if ( $cur_product ) {
+						$image_src   = wp_get_attachment_image_src( get_post_thumbnail_id( $cur_product->get_id() ), 'thumbnail' );
+						return $image_src;
+					} else {
+						return null;
+					}
+				},
+			),
+		);
+		register_rest_field(
+			'product',
+			'myronjaProductStockStatus',
+			array(
+				'get_callback' => function () {
+					$cur_product = wc_get_product();
+
+					if ( $cur_product ) {
+						return $cur_product->is_in_stock();
+					} else {
+						return null;
+					}
+				},
+			),
+		);
 }
 add_action( 'rest_api_init', 'flatsome_child_custom_rest' );
-
 
 /**
  * Registers custom order status post type -
@@ -685,3 +707,23 @@ function myronja_hide_shipping_when_free_is_available( $rates ) {
 	return ! empty( $free ) ? $free : $rates;
 }
 add_filter( 'woocommerce_package_rates', 'myronja_hide_shipping_when_free_is_available', 100 );
+
+/**
+ * Change add to cart text on single product page.
+ *
+ * @return string
+ */
+function woocommerce_add_to_cart_button_text_single() {
+	return __( 'Tilføj kurv', 'woocommerce' );
+}
+add_filter( 'woocommerce_product_single_add_to_cart_text', 'woocommerce_add_to_cart_button_text_single' );
+
+/**
+ * Change add to cart text on product archives page.
+ *
+ * @return string
+ */
+function woocommerce_add_to_cart_button_text_archives() {
+	return __( 'Tilføj kurv', 'woocommerce' );
+}
+add_filter( 'woocommerce_product_add_to_cart_text', 'woocommerce_add_to_cart_button_text_archives' );
